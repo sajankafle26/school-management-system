@@ -4,7 +4,7 @@ import { useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import type { User, AcademicYear, WebsiteContent, FeeInvoice } from '../types';
+import type { User, AcademicYear, WebsiteContent } from '../types';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -19,6 +19,7 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
   const [websiteContent, setWebsiteContent] = useState<WebsiteContent>(null as unknown as WebsiteContent);
   const [loading, setLoading] = useState(true);
   const [isViewingWebsite, setIsViewingWebsite] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('currentUser');
@@ -47,7 +48,7 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-[#f4f6f9]">
       <div className="flex flex-col items-center gap-4">
         <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
         <p className="text-gray-600 font-medium">Loading Dashboard...</p>
@@ -62,7 +63,7 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
       <div>
         <div className="bg-yellow-400 text-center py-2 text-sm font-semibold text-yellow-900">
           Preview Mode
-          <button onClick={() => setIsViewingWebsite(false)} className="mr-2 underline font-bold ml-2">Return to Dashboard</button>
+          <button onClick={() => setIsViewingWebsite(false)} className="underline font-bold ml-2">Return to Dashboard</button>
         </div>
         <div className="text-center p-20 text-gray-600">
           <h2 className="text-2xl font-bold mb-2">Website Preview</h2>
@@ -74,12 +75,12 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
   }
 
   return (
-    <div className="flex h-screen bg-gray-100" dir="rtl">
+    <div className="flex h-screen bg-[#f4f6f9] overflow-hidden">
       <Sidebar
-        currentPage={undefined}
-        setCurrentPage={() => {}}
         user={user}
         onLogout={handleLogout}
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header
@@ -90,8 +91,9 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
           setSelectedAcademicYear={setSelectedAcademicYear}
           isViewingWebsite={isViewingWebsite}
           setIsViewingWebsite={setIsViewingWebsite}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f4f6f9] p-4">
           {children}
         </main>
       </div>

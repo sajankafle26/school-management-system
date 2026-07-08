@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [websiteContent, setWebsiteContent] = useState<WebsiteContent>(null as unknown as WebsiteContent);
   const [invoices, setInvoices] = useState<FeeInvoice[]>([]);
   const [isViewingWebsite, setIsViewingWebsite] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('currentUser');
@@ -128,12 +129,12 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100" dir="rtl">
+    <div className="flex h-screen bg-[#f4f6f9] overflow-hidden">
       <Sidebar
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         user={user}
         onLogout={handleLogout}
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header
@@ -144,8 +145,9 @@ export default function DashboardPage() {
           setSelectedAcademicYear={setSelectedAcademicYear}
           isViewingWebsite={isViewingWebsite}
           setIsViewingWebsite={setIsViewingWebsite}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f4f6f9] p-4">
           {renderPage()}
         </main>
       </div>
