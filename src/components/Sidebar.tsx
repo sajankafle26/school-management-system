@@ -3,8 +3,8 @@ import type { Page, User } from '../types';
 import { DashboardIcon, StudentsIcon, TeachersIcon, AttendanceIcon, NoticesIcon, EventsIcon, ResultsIcon, AcademicsIcon, FinancialsIcon, LogoutIcon, ParentIcon, LibraryIcon, SmsIcon, RoutineIcon, HomeworkIcon, BriefcaseIcon, SettingsIcon, GlobeIcon, BusIcon } from './icons';
 
 interface SidebarProps {
-  currentPage: Page;
-  setCurrentPage: (page: Page) => void;
+  currentPage?: Page;
+  setCurrentPage?: (page: Page) => void;
   user: User;
   onLogout: () => void;
 }
@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, user, on
               icon={item.icon}
               label={item.label}
               isActive={currentPage === item.page}
-              onClick={() => setCurrentPage(item.page)}
+              onClick={() => setCurrentPage?.(item.page)}
             />
           ))}
         </nav>
