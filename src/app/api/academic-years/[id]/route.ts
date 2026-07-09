@@ -19,6 +19,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await connectDB();
     const { id } = await params;
     const body = await request.json();
+    if (body.isCurrent) {
+      await AcademicYear.updateMany({}, { isCurrent: false });
+    }
     const year = await AcademicYear.findByIdAndUpdate(id, body, { new: true }).lean();
     if (!year) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     return NextResponse.json(year);

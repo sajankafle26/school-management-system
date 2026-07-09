@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import type { User } from '../types';
 
 interface SidebarProps {
@@ -8,41 +11,119 @@ interface SidebarProps {
   onToggle: () => void;
 }
 
-const allNavItems = [
-  { section: 'MAIN NAVIGATION', items: [
-    { label: 'Dashboard', icon: '📊', roles: ['admin', 'teacher', 'student', 'parent', 'staff', 'driver'] },
-  ]},
-  { section: 'MANAGEMENT', items: [
-    { label: 'Students', icon: '🎓', roles: ['admin', 'teacher'] },
-    { label: 'Teachers', icon: '👩‍🏫', roles: ['admin'] },
-    { label: 'Parents', icon: '👪', roles: ['admin', 'teacher'] },
-    { label: 'Staff', icon: '💼', roles: ['admin'] },
-  ]},
-  { section: 'ACADEMIC', items: [
-    { label: 'Attendance', icon: '📋', roles: ['admin', 'teacher'] },
-    { label: 'Results', icon: '📊', roles: ['admin', 'teacher'] },
-    { label: 'Homework', icon: '📝', roles: ['admin', 'teacher'] },
-    { label: 'Routines', icon: '📅', roles: ['admin', 'teacher'] },
-    { label: 'Syllabus', icon: '📚', roles: ['admin', 'teacher'] },
-    { label: 'Library', icon: '📖', roles: ['admin', 'teacher'] },
-  ]},
-  { section: 'FINANCE', items: [
-    { label: 'Accounting', icon: '💰', roles: ['admin'] },
-    { label: 'Fee Collection', icon: '💳', roles: ['admin'] },
-  ]},
-  { section: 'SERVICES', items: [
-    { label: 'Transport', icon: '🚌', roles: ['admin'] },
-    { label: 'SMS Services', icon: '📱', roles: ['admin', 'teacher'] },
-    { label: 'Notices', icon: '📢', roles: ['admin', 'teacher', 'student', 'parent', 'staff', 'driver'] },
-    { label: 'Events', icon: '🎉', roles: ['admin', 'teacher', 'student', 'parent', 'staff', 'driver'] },
-  ]},
-  { section: 'SETTINGS', items: [
-    { label: 'Academic Settings', icon: '⚙️', roles: ['admin'] },
-    { label: 'Website CMS', icon: '🌐', roles: ['admin'] },
-  ]},
-];
+const navConfig: Record<string, { section: string; items: { label: string; icon: string; path: string; tab?: string }[] }[]> = {
+  admin: [
+    { section: 'MAIN NAVIGATION', items: [
+      { label: 'Dashboard', icon: '📊', path: '/dashboard/admin', tab: 'overview' },
+    ]},
+    { section: 'MANAGEMENT', items: [
+      { label: 'Students', icon: '🎓', path: '/dashboard/admin', tab: 'students' },
+      { label: 'Teachers', icon: '👩‍🏫', path: '/dashboard/admin', tab: 'teachers' },
+      { label: 'Parents', icon: '👪', path: '/dashboard/admin', tab: 'parents' },
+      { label: 'Staff', icon: '💼', path: '/dashboard/admin', tab: 'staff' },
+    ]},
+    { section: 'ACADEMIC', items: [
+      { label: 'Attendance', icon: '📋', path: '/dashboard/admin', tab: 'attendance' },
+      { label: 'Results', icon: '📊', path: '/dashboard/admin', tab: 'results' },
+      { label: 'Homework', icon: '📝', path: '/dashboard/admin', tab: 'homework' },
+      { label: 'Routines', icon: '📅', path: '/dashboard/admin', tab: 'routines' },
+      { label: 'Syllabus', icon: '📚', path: '/dashboard/admin', tab: 'syllabus' },
+      { label: 'Library', icon: '📖', path: '/dashboard/admin', tab: 'library' },
+    ]},
+    { section: 'FINANCE', items: [
+      { label: 'Accounting', icon: '💰', path: '/dashboard/admin', tab: 'accounting' },
+      { label: 'Fee Collection', icon: '💳', path: '/dashboard/admin', tab: 'fees' },
+    ]},
+    { section: 'SERVICES', items: [
+      { label: 'Transport', icon: '🚌', path: '/dashboard/admin', tab: 'transport' },
+      { label: 'SMS Services', icon: '📱', path: '/dashboard/admin', tab: 'sms' },
+      { label: 'Notices', icon: '📢', path: '/dashboard/admin', tab: 'notices' },
+      { label: 'Events', icon: '🎉', path: '/dashboard/admin', tab: 'events' },
+    ]},
+    { section: 'SETTINGS', items: [
+      { label: 'Academic Settings', icon: '⚙️', path: '/dashboard/admin', tab: 'settings' },
+      { label: 'Website CMS', icon: '🌐', path: '/dashboard/admin', tab: 'website' },
+    ]},
+  ],
+  teacher: [
+    { section: 'MAIN NAVIGATION', items: [
+      { label: 'Dashboard', icon: '📊', path: '/dashboard/teacher', tab: 'overview' },
+    ]},
+    { section: 'ACADEMIC', items: [
+      { label: 'Attendance', icon: '📋', path: '/dashboard/teacher', tab: 'attendance' },
+      { label: 'Results', icon: '📊', path: '/dashboard/teacher', tab: 'results' },
+      { label: 'Homework', icon: '📝', path: '/dashboard/teacher', tab: 'homework' },
+      { label: 'Routines', icon: '📅', path: '/dashboard/teacher', tab: 'routines' },
+      { label: 'Syllabus', icon: '📚', path: '/dashboard/teacher', tab: 'syllabus' },
+      { label: 'Library', icon: '📖', path: '/dashboard/teacher', tab: 'library' },
+    ]},
+    { section: 'SERVICES', items: [
+      { label: 'Notices', icon: '📢', path: '/dashboard/teacher', tab: 'notices' },
+      { label: 'Events', icon: '🎉', path: '/dashboard/teacher', tab: 'events' },
+      { label: 'SMS Services', icon: '📱', path: '/dashboard/teacher', tab: 'sms' },
+    ]},
+  ],
+  student: [
+    { section: 'MAIN NAVIGATION', items: [
+      { label: 'Dashboard', icon: '📊', path: '/dashboard/student', tab: 'overview' },
+    ]},
+    { section: 'ACADEMIC', items: [
+      { label: 'Results', icon: '📊', path: '/dashboard/student', tab: 'results' },
+      { label: 'Homework', icon: '📝', path: '/dashboard/student', tab: 'homework' },
+      { label: 'Attendance', icon: '📋', path: '/dashboard/student', tab: 'attendance' },
+      { label: 'Routines', icon: '📅', path: '/dashboard/student', tab: 'routines' },
+      { label: 'Syllabus', icon: '📚', path: '/dashboard/student', tab: 'syllabus' },
+      { label: 'Library', icon: '📖', path: '/dashboard/student', tab: 'library' },
+    ]},
+    { section: 'SERVICES', items: [
+      { label: 'Notices', icon: '📢', path: '/dashboard/student', tab: 'notices' },
+      { label: 'Events', icon: '🎉', path: '/dashboard/student', tab: 'events' },
+      { label: 'Fee Status', icon: '💰', path: '/dashboard/student', tab: 'fees' },
+    ]},
+  ],
+  parent: [
+    { section: 'MAIN NAVIGATION', items: [
+      { label: 'Dashboard', icon: '📊', path: '/dashboard/parent', tab: 'overview' },
+    ]},
+    { section: 'CHILDREN', items: [
+      { label: 'Results', icon: '📊', path: '/dashboard/parent', tab: 'results' },
+      { label: 'Attendance', icon: '📋', path: '/dashboard/parent', tab: 'attendance' },
+      { label: 'Homework', icon: '📝', path: '/dashboard/parent', tab: 'homework' },
+    ]},
+    { section: 'FINANCE', items: [
+      { label: 'Fee Details', icon: '💰', path: '/dashboard/parent', tab: 'fees' },
+      { label: 'Payment History', icon: '🧾', path: '/dashboard/parent', tab: 'payments' },
+    ]},
+    { section: 'SERVICES', items: [
+      { label: 'Notices', icon: '📢', path: '/dashboard/parent', tab: 'notices' },
+      { label: 'Events', icon: '🎉', path: '/dashboard/parent', tab: 'events' },
+      { label: 'Messages', icon: '💬', path: '/dashboard/parent', tab: 'messages' },
+    ]},
+  ],
+};
 
 const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, collapsed, onToggle }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get('tab') || 'overview';
+
+  const navSections = navConfig[user.role] || [];
+
+  const handleNavClick = (path: string, tab?: string) => {
+    if (tab) {
+      router.push(`${path}?tab=${tab}`);
+    } else {
+      router.push(path);
+    }
+  };
+
+  const isActive = (path: string, tab?: string) => {
+    if (pathname !== path) return false;
+    if (!tab) return currentTab === 'overview';
+    return currentTab === tab;
+  };
+
   return (
     <aside className={`${collapsed ? 'w-[70px]' : 'w-64'} h-screen bg-[#343a40] flex flex-col transition-all duration-300 overflow-hidden flex-shrink-0`}>
       {/* Logo */}
@@ -60,33 +141,36 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, collapsed, onToggle }
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 scrollbar-thin">
-        {allNavItems.map((section, si) => {
-          const visibleItems = section.items.filter(item => item.roles.includes(user.role));
-          if (visibleItems.length === 0) return null;
-          return (
-            <div key={si} className="mb-2">
-              {!collapsed && (
-                <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  {section.section}
-                </div>
-              )}
-              {visibleItems.map((item, ii) => (
-                <a
+        {navSections.map((section, si) => (
+          <div key={si} className="mb-2">
+            {!collapsed && (
+              <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                {section.section}
+              </div>
+            )}
+            {section.items.map((item, ii) => {
+              const active = isActive(item.path, item.tab);
+              return (
+                <button
                   key={ii}
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  className="flex items-center gap-3 px-4 py-2.5 text-gray-300 hover:bg-white/10 hover:text-white transition-colors group"
+                  onClick={() => handleNavClick(item.path, item.tab)}
+                  className={`flex items-center gap-3 px-4 py-2.5 transition-colors w-full text-left ${
+                    active
+                      ? 'bg-blue-500/20 text-blue-300 border-r-2 border-blue-500'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`}
                   title={collapsed ? item.label : undefined}
                 >
                   <span className="text-lg flex-shrink-0 w-6 text-center">{item.icon}</span>
                   {!collapsed && (
                     <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
                   )}
-                </a>
-              ))}
-            </div>
-          );
-        })}
+                  {active && !collapsed && <span className="ml-auto w-1.5 h-1.5 bg-blue-400 rounded-full" />}
+                </button>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* User Section */}
