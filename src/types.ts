@@ -1,4 +1,4 @@
-export type Page = 'Dashboard' | 'Students' | 'Parents' | 'Teachers' | 'Staff' | 'Attendance' | 'Notices' | 'Academic Calendar' | 'Results' | 'Academics' | 'Accounting' | 'Library' | 'SMS Services' | 'Routines' | 'Homework' | 'Academic Settings' | 'Website CMS' | 'Transport';
+export type Page = 'Dashboard' | 'Students' | 'Parents' | 'Teachers' | 'Staff' | 'Attendance' | 'Notices' | 'Academic Calendar' | 'Results' | 'Academics' | 'Accounting' | 'Library' | 'SMS Services' | 'Routines' | 'Homework' | 'Academic Settings' | 'Website CMS' | 'Transport' | 'Class Sections';
 
 export type UserRole = 'admin' | 'teacher' | 'student' | 'parent' | 'staff' | 'driver';
 
@@ -13,18 +13,24 @@ export interface User {
 }
 
 export interface AcademicYear {
-  year: string; // e.g., "2080/2081"
+  _id?: string;
+  year: string;
   isCurrent: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Parent {
+  _id?: string;
   id: number;
   name: string;
   contact: string;
   email: string;
+  address?: string;
 }
 
 export interface Student {
+  _id?: string;
   id: number;
   name: string;
   nepaliName: string;
@@ -36,13 +42,15 @@ export interface Student {
   contact: string;
   address: string;
   profilePic: string;
-  parentId: number; // Link to Parent
-  busId?: number; // Link to Bus
-  rfidCardId?: string; // Unique ID for RFID card
+  parentId: number;
+  busId?: number;
+  rfidCardId?: string;
   academicYear: string;
+  attendance?: { present: number; absent: number; total: number };
 }
 
 export interface Teacher {
+  _id?: string;
   id: number;
   name: string;
   nepaliName: string;
@@ -54,6 +62,7 @@ export interface Teacher {
 }
 
 export interface Staff {
+  _id?: string;
   id: number;
   name: string;
   nepaliName: string;
@@ -64,32 +73,47 @@ export interface Staff {
 }
 
 export interface Driver {
-    id: number;
-    name: string;
-    contact: string;
-    licenseNumber: string;
-    profilePic: string;
-    busId: number;
+  _id?: string;
+  id: number;
+  name: string;
+  contact: string;
+  licenseNumber: string;
+  profilePic: string;
+  busId: number;
 }
 
 export interface Notice {
+  _id?: string;
   id: number;
   title: string;
   date: string;
   content: string;
   author: string;
-  targetClass?: string; // e.g., '10' or 'All'
-  targetSection?: string; // e.g., 'A' or 'All'
+  targetClass?: string;
+  targetSection?: string;
   academicYear: string;
 }
 
 export interface Event {
+  _id?: string;
   id: number;
   title: string;
   date: string;
   description: string;
   type: 'Holiday' | 'Event' | 'Exam';
   academicYear: string;
+}
+
+export interface ClassSection {
+  _id: string;
+  className: string;
+  section: string;
+  classTeacherId?: string;
+  capacity: number;
+  academicYear: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SubjectMark {
@@ -99,6 +123,7 @@ export interface SubjectMark {
 }
 
 export interface Result {
+  _id?: string;
   id: number;
   studentId: number;
   examType: 'First Terminal' | 'Mid Terminal' | 'Final Terminal';
@@ -128,15 +153,17 @@ export interface FeeStructure {
 }
 
 export interface FeeInvoice {
+  _id?: string;
   id: number;
   studentId: number;
   amount: number;
   dueDate: string;
-  status: 'Paid' | 'Unpaid' | 'Overdue';
+  status: 'Paid' | 'Unpaid' | 'Overdue' | 'Partial';
   academicYear: string;
 }
 
 export interface Expense {
+  _id?: string;
   id: number;
   date: string;
   category: 'Salaries' | 'Utilities' | 'Supplies' | 'Maintenance' | 'Other';
