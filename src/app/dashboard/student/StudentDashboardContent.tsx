@@ -356,7 +356,7 @@ export default function StudentDashboardContent() {
                     </div>
                   </div>
                 );
-              })()}
+              )()}
             </div>
             {filteredHomeworks.length === 0 && (
               <p className="text-gray-500 text-center py-8">No homework found matching your filters</p>
