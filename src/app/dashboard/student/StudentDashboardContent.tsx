@@ -286,39 +286,14 @@ export default function StudentDashboardContent() {
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3">
-              {filteredHomeworks.length > 0 ? (
-                filteredHomeworks.map((hw, i) => (
-                  <div key={i} className={`p-4 rounded-lg border-l-4 ${
-                    hw.status === 'Due Today' ? 'border-red-400 bg-red-50' :
-                    hw.status === 'Pending' ? 'border-orange-400 bg-orange-50' :
-                    'border-gray-300 bg-gray-50'
-                  }`}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold text-gray-800">{hw.subject}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        hw.status === 'Due Today' ? 'bg-red-200 text-red-800' :
-                        hw.status === 'Pending' ? 'bg-orange-200 text-orange-800' :
-                        'bg-gray-200 text-gray-600'
-                      }`}>{hw.status}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-1">{hw.title}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Due: {hw.due}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        hw.priority === 'High' ? 'bg-red-100 text-red-700' :
-                        hw.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                        'bg-gray-100 text-gray-600'
-                      }`}>{hw.priority}</span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                [
+              {(() => {
+                const homeworksToShow = filteredHomeworks.length > 0 ? filteredHomeworks : [
                   { subject: 'Mathematics', title: 'Quadratic Equations - Ex 3.2', description: 'Solve all problems', due: '2026-07-10', status: 'Pending', priority: 'High' },
                   { subject: 'Science', title: 'Physics Lab Report Ch.3', description: 'Complete lab report', due: '2026-07-12', status: 'Pending', priority: 'Medium' },
                   { subject: 'English', title: 'Essay Writing - My School', description: 'Write 500 words', due: '2026-07-08', status: 'Due Today', priority: 'High' },
                   { subject: 'Nepali', title: 'Grammar Worksheet', description: 'Complete exercises', due: '2026-07-15', status: 'Upcoming', priority: 'Low' },
-                ].map((hw, i) => (
+                ];
+                return homeworksToShow.map((hw, i) => (
                   <div key={i} className={`p-4 rounded-lg border-l-4 ${
                     hw.status === 'Due Today' ? 'border-red-400 bg-red-50' :
                     hw.status === 'Pending' ? 'border-orange-400 bg-orange-50' :
@@ -332,19 +307,6 @@ export default function StudentDashboardContent() {
                         'bg-gray-200 text-gray-600'
                       }`}>{hw.status}</span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">{hw.title}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Due: {hw.due}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        hw.priority === 'High' ? 'bg-red-100 text-red-700' :
-                        hw.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                        'bg-gray-100 text-gray-600'
-                      }`}>{hw.priority}</span>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
                     <p className="text-sm text-gray-600 mb-1">{hw.title}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-gray-400">Due: {hw.due}</span>
@@ -356,7 +318,7 @@ export default function StudentDashboardContent() {
                     </div>
                   </div>
                 );
-              )}
+              })()}
             </div>
             {filteredHomeworks.length === 0 && (
               <p className="text-gray-500 text-center py-8">No homework found matching your filters</p>
