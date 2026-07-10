@@ -197,6 +197,8 @@ export interface Homework {
   dueDate: string; // YYYY-MM-DD
   imageUrl?: string;
   academicYear: string;
+  status?: 'Pending' | 'Due Today' | 'Upcoming' | 'Completed' | 'Draft';
+  priority?: 'High' | 'Medium' | 'Low';
 }
 
 // Library Types

@@ -9,6 +9,7 @@ export default function AdminDashboardContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [user, setUser] = useState<User | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Data states
   const [students, setStudents] = useState<Student[]>([]);
@@ -277,8 +278,14 @@ export default function AdminDashboardContent() {
       case 'students':
         return (
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <h3 className="font-bold text-gray-800">Students ({totalStudents})</h3>
+              <input
+                type="text"
+                placeholder="Search students..."
+                className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -293,8 +300,14 @@ export default function AdminDashboardContent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {yearStudents.map((s, i) => (
-                    <tr key={s._id} className="hover:bg-gray-50">
+                  {yearStudents
+                    .filter(s => 
+                      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      s.guardianName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      s.rfidCardId?.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    .map((s, i) => (
+                      <tr key={s._id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-sm font-medium text-gray-800">{s.name}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{s.className} {s.section}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{s.roll}</td>

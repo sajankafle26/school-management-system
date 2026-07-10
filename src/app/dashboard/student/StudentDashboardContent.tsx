@@ -109,7 +109,8 @@ export default function StudentDashboardContent() {
   // Filter data
   const filteredHomeworks = myHomeworks.filter(hw => {
     const matchesSearch = hw.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          hw.topic.toLowerCase().includes(searchQuery.toLowerCase());
+                          hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          hw.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || hw.status === filterStatus;
     const matchesSubject = filterSubject === 'all' || hw.subject === filterSubject;
     return matchesSearch && matchesStatus && matchesSubject;
@@ -121,11 +122,8 @@ export default function StudentDashboardContent() {
     const matchesSubject = filterSubject === 'all' || subject === filterSubject;
     return matchesSearch && matchesSubject;
   });
-    const matchesSubject = filterSubject === 'all' || r.subject === filterSubject;
-    return matchesSearch && matchesSubject;
-  });
 
-  const uniqueSubjects = [...new Set([...myResults.map(r => r.subject), ...myHomeworks.map(h => h.subject)])];
+  const uniqueSubjects = [...new Set([...myResults.map(r => r.marks?.[0]?.subject || ''), ...myHomeworks.map(h => h.subject)])].filter(Boolean);
 
   const filteredAttendance = attendanceHistory.filter(a => 
     a.month.toLowerCase().includes(searchQuery.toLowerCase())
@@ -213,22 +211,26 @@ export default function StudentDashboardContent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filteredResults.map((result, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-semibold text-gray-800">{result.subject || 'Subject'}</td>
-                      <td className="px-4 py-3 text-sm font-bold text-gray-800">{result.marksObtained || 0}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{result.fullMarks || 100}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                            <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${result.marksObtained || 0}%` }}></div>
+                  {filteredResults.map((result, i) => {
+                    const subject = result.marks?.[0]?.subject || 'Subject';
+                    const marksObtained = result.marks?.[0]?.marksObtained || 0;
+                    const fullMarks = result.marks?.[0]?.fullMarks || 100;
+                    return (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm font-semibold text-gray-800">{subject}</td>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-800">{marksObtained}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{fullMarks}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                              <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${marksObtained}%` }}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">{marksObtained}%</span>
                           </div>
-                          <span className="text-xs text-gray-500">{result.marksObtained || 0}%</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          result.grade?.startsWith('A+') ? 'bg-green-100 text-green-700' :
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded text-xs font-bold ${
+                            result.grade?.startsWith('A+') ? 'bg-green-100 text-green-700' :
                           result.grade?.startsWith('A') ? 'bg-blue-100 text-blue-700' :
                           'bg-gray-100 text-gray-600'
                         }`}>{result.grade || 'N/A'}</span>
