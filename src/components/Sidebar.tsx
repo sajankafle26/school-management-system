@@ -17,10 +17,10 @@ const navConfig: Record<string, { section: string; items: { label: string; icon:
       { label: 'Dashboard', icon: '📊', path: '/dashboard/admin', tab: 'overview' },
     ]},
     { section: 'MANAGEMENT', items: [
-      { label: 'Students', icon: '🎓', path: '/dashboard/admin', tab: 'students' },
-      { label: 'Teachers', icon: '👩‍🏫', path: '/dashboard/admin', tab: 'teachers' },
-      { label: 'Parents', icon: '👪', path: '/dashboard/admin', tab: 'parents' },
-      { label: 'Staff', icon: '💼', path: '/dashboard/admin', tab: 'staff' },
+      { label: 'Students', icon: '🎓', path: '/dashboard/admin/students' },
+      { label: 'Teachers', icon: '👩‍🏫', path: '/dashboard/admin/teachers' },
+      { label: 'Parents', icon: '👪', path: '/dashboard/admin/parents' },
+      { label: 'Staff', icon: '💼', path: '/dashboard/admin/staff' },
     ]},
     { section: 'ACADEMIC', items: [
       { label: 'Attendance', icon: '📋', path: '/dashboard/admin', tab: 'attendance' },
