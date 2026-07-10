@@ -13,7 +13,6 @@ export default function StudentDashboardContent() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterSubject, setFilterSubject] = useState('all');
   
-  // Data states
   const [myProfile, setMyProfile] = useState<Student | null>(null);
   const [myResults, setMyResults] = useState<Result[]>([]);
   const [myHomeworks, setMyHomeworks] = useState<Homework[]>([]);
@@ -231,12 +230,13 @@ export default function StudentDashboardContent() {
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded text-xs font-bold ${
                             result.grade?.startsWith('A+') ? 'bg-green-100 text-green-700' :
-                          result.grade?.startsWith('A') ? 'bg-blue-100 text-blue-700' :
-                          'bg-gray-100 text-gray-600'
-                        }`}>{result.grade || 'N/A'}</span>
-                      </td>
-                    </tr>
-                  ))}
+                            result.grade?.startsWith('A') ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-600'
+                          }`}>{result.grade || 'N/A'}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
                 <tfoot className="bg-gray-50">
                   <tr>
@@ -287,10 +287,10 @@ export default function StudentDashboardContent() {
             </div>
             <div className="grid md:grid-cols-2 gap-3">
               {filteredHomeworks.length > 0 ? filteredHomeworks : [
-                { subject: 'Mathematics', topic: 'Quadratic Equations - Ex 3.2', due: '2026-07-10', status: 'Pending', priority: 'High' },
-                { subject: 'Science', topic: 'Physics Lab Report Ch.3', due: '2026-07-12', status: 'Pending', priority: 'Medium' },
-                { subject: 'English', topic: 'Essay Writing - My School', due: '2026-07-08', status: 'Due Today', priority: 'High' },
-                { subject: 'Nepali', topic: 'Grammar Worksheet', due: '2026-07-15', status: 'Upcoming', priority: 'Low' },
+                { subject: 'Mathematics', title: 'Quadratic Equations - Ex 3.2', description: 'Solve all problems', due: '2026-07-10', status: 'Pending', priority: 'High' },
+                { subject: 'Science', title: 'Physics Lab Report Ch.3', description: 'Complete lab report', due: '2026-07-12', status: 'Pending', priority: 'Medium' },
+                { subject: 'English', title: 'Essay Writing - My School', description: 'Write 500 words', due: '2026-07-08', status: 'Due Today', priority: 'High' },
+                { subject: 'Nepali', title: 'Grammar Worksheet', description: 'Complete exercises', due: '2026-07-15', status: 'Upcoming', priority: 'Low' },
               ].map((hw, i) => (
                 <div key={i} className={`p-4 rounded-lg border-l-4 ${
                   hw.status === 'Due Today' ? 'border-red-400 bg-red-50' :
@@ -305,7 +305,7 @@ export default function StudentDashboardContent() {
                       'bg-gray-200 text-gray-600'
                     }`}>{hw.status}</span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-1">{hw.topic}</p>
+                  <p className="text-sm text-gray-600 mb-1">{hw.title}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-400">Due: {hw.due}</span>
                     <span className={`px-2 py-0.5 rounded text-xs font-bold ${
