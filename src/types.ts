@@ -59,6 +59,7 @@ export interface Teacher {
   email: string;
   profilePic: string;
   classTeacherOf?: string;
+  academicYear?: string;
 }
 
 export interface Staff {
@@ -70,6 +71,7 @@ export interface Staff {
   contact: string;
   email: string;
   profilePic: string;
+  academicYear?: string;
 }
 
 export interface Driver {
