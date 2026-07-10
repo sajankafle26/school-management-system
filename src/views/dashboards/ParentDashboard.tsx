@@ -124,11 +124,13 @@ const ChildOverview: React.FC<{student: Student, selectedAcademicYear: string, i
     
     const eventsThisYear = events.filter(e => e.academicYear === selectedAcademicYear);
 
-     const getStatusPill = (status: 'Paid' | 'Unpaid' | 'Overdue') => {
+     const getStatusPill = (status: 'Paid' | 'Unpaid' | 'Overdue' | 'Partial') => {
         switch (status) {
             case 'Paid': return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Paid</span>;
             case 'Unpaid': return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Unpaid</span>;
             case 'Overdue': return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Overdue</span>;
+            case 'Partial': return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Partial</span>;
+            default: return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{status}</span>;
         }
     };
 

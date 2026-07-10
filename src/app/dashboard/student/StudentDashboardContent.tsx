@@ -116,10 +116,10 @@ export default function StudentDashboardContent() {
   });
 
   const homeworksToShow = filteredHomeworks.length > 0 ? filteredHomeworks : [
-    { subject: 'Mathematics', title: 'Quadratic Equations - Ex 3.2', description: 'Solve all problems', due: '2026-07-10', status: 'Pending', priority: 'High' },
-    { subject: 'Science', title: 'Physics Lab Report Ch.3', description: 'Complete lab report', due: '2026-07-12', status: 'Pending', priority: 'Medium' },
-    { subject: 'English', title: 'Essay Writing - My School', description: 'Write 500 words', due: '2026-07-08', status: 'Due Today', priority: 'High' },
-    { subject: 'Nepali', title: 'Grammar Worksheet', description: 'Complete exercises', due: '2026-07-15', status: 'Upcoming', priority: 'Low' },
+    { subject: 'Mathematics', title: 'Quadratic Equations - Ex 3.2', description: 'Solve all problems', dueDate: '2026-07-10', status: 'Pending', priority: 'High' },
+    { subject: 'Science', title: 'Physics Lab Report Ch.3', description: 'Complete lab report', dueDate: '2026-07-12', status: 'Pending', priority: 'Medium' },
+    { subject: 'English', title: 'Essay Writing - My School', description: 'Write 500 words', dueDate: '2026-07-08', status: 'Due Today', priority: 'High' },
+    { subject: 'Nepali', title: 'Grammar Worksheet', description: 'Complete exercises', dueDate: '2026-07-15', status: 'Upcoming', priority: 'Low' },
   ];
 
   const filteredResults = myResults.filter(r => {
@@ -310,7 +310,7 @@ export default function StudentDashboardContent() {
                     </div>
                     <p className="text-sm text-gray-600 mb-1">{hw.title}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-400">Due: {hw.due}</span>
+                      <span className="text-xs text-gray-400">Due: {hw.dueDate}</span>
                       <span className={`px-2 py-0.5 rounded text-xs font-bold ${
                         hw.priority === 'High' ? 'bg-red-100 text-red-700' :
                         hw.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :

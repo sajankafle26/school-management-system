@@ -82,8 +82,8 @@ export default function TeacherDashboardContent() {
 
   const currentYear = academicYears.find(y => y.isCurrent)?.year || academicYears[0]?.year || '2080/2081';
   const myStudents = students.filter(s => myClasses.some(c => c.startsWith(s.className)));
-  const myResults = results.filter(r => myStudents.some(s => s._id === r.studentId || s.id === r.studentId));
-  const activeHomeworks = homeworks.filter(h => h.status === 'Active');
+  const myResults = results.filter(r => myStudents.some(s => String(s._id) === String(r.studentId) || String(s.id) === String(r.studentId)));
+  const activeHomeworks = homeworks.filter(h => h.status === 'Pending' || h.status === 'Due Today');
   const pendingResults = results.filter(r => !r.percentage).length;
 
   const schedule = [
@@ -210,20 +210,23 @@ export default function TeacherDashboardContent() {
                   {homeworks.map((hw, i) => (
                     <tr key={i} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-sm font-semibold text-gray-800">{hw.subject || 'Mathematics'}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{hw.topic || hw.title || 'Assignment'}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{hw.className || hw.class || '10 A'}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{hw.dueDate || hw.due || 'N/A'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{hw.title}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{hw.className || '10 A'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{hw.dueDate || 'N/A'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                            <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${(hw.submitted || 0) / (hw.total || 1) * 100}%` }}></div>
+                            <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '50%' }}></div>
                           </div>
-                          <span className="text-xs text-gray-500">{(hw.submitted || 0)}/{(hw.total || 0)}</span>
+                          <span className="text-xs text-gray-500">0/0</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          hw.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                          hw.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                          hw.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                          hw.status === 'Due Today' ? 'bg-red-100 text-red-700' :
+                          'bg-gray-100 text-gray-500'
                         }`}>{hw.status || 'Draft'}</span>
                       </td>
                     </tr>
@@ -253,13 +256,13 @@ export default function TeacherDashboardContent() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {myResults.slice(0, 20).map((result, i) => {
-                    const student = myStudents.find(s => s._id === result.studentId || s.id === result.studentId);
+                    const student = myStudents.find(s => String(s._id) === String(result.studentId) || s.id === result.studentId);
                     return (
                       <tr key={i} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-sm font-semibold text-gray-800">{student?.name || 'Unknown'}</td>
                         <td className="px-4 py-3 text-sm text-gray-600">{student ? `${student.className} ${student.section}` : 'N/A'}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{result.subject || 'Mathematics'}</td>
-                        <td className="px-4 py-3 text-sm font-bold text-gray-800">{(result.marksObtained || 0)}/{(result.fullMarks || 100)}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{result.marks?.[0]?.subject || 'Mathematics'}</td>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-800">{(result.marks?.[0]?.marksObtained || 0)}/{(result.marks?.[0]?.fullMarks || 100)}</td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded text-xs font-bold ${
                             result.grade?.startsWith('A') ? 'bg-green-100 text-green-700' :
