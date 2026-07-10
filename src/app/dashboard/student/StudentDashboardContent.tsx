@@ -115,6 +115,13 @@ export default function StudentDashboardContent() {
     return matchesSearch && matchesStatus && matchesSubject;
   });
 
+  const homeworksToShow = filteredHomeworks.length > 0 ? filteredHomeworks : [
+    { subject: 'Mathematics', title: 'Quadratic Equations - Ex 3.2', description: 'Solve all problems', due: '2026-07-10', status: 'Pending', priority: 'High' },
+    { subject: 'Science', title: 'Physics Lab Report Ch.3', description: 'Complete lab report', due: '2026-07-12', status: 'Pending', priority: 'Medium' },
+    { subject: 'English', title: 'Essay Writing - My School', description: 'Write 500 words', due: '2026-07-08', status: 'Due Today', priority: 'High' },
+    { subject: 'Nepali', title: 'Grammar Worksheet', description: 'Complete exercises', due: '2026-07-15', status: 'Upcoming', priority: 'Low' },
+  ];
+
   const filteredResults = myResults.filter(r => {
     const subject = r.marks?.[0]?.subject || '';
     const matchesSearch = subject.toLowerCase().includes(searchQuery.toLowerCase());
@@ -286,19 +293,12 @@ export default function StudentDashboardContent() {
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3">
-              {(() => {
-                const homeworksToShow = filteredHomeworks.length > 0 ? filteredHomeworks : [
-                  { subject: 'Mathematics', title: 'Quadratic Equations - Ex 3.2', description: 'Solve all problems', due: '2026-07-10', status: 'Pending', priority: 'High' },
-                  { subject: 'Science', title: 'Physics Lab Report Ch.3', description: 'Complete lab report', due: '2026-07-12', status: 'Pending', priority: 'Medium' },
-                  { subject: 'English', title: 'Essay Writing - My School', description: 'Write 500 words', due: '2026-07-08', status: 'Due Today', priority: 'High' },
-                  { subject: 'Nepali', title: 'Grammar Worksheet', description: 'Complete exercises', due: '2026-07-15', status: 'Upcoming', priority: 'Low' },
-                ];
-                return homeworksToShow.map((hw, i) => (
-                  <div key={i} className={`p-4 rounded-lg border-l-4 ${
-                    hw.status === 'Due Today' ? 'border-red-400 bg-red-50' :
-                    hw.status === 'Pending' ? 'border-orange-400 bg-orange-50' :
-                    'border-gray-300 bg-gray-50'
-                  }`}>
+              {homeworksToShow.map((hw, i) => (
+                <div key={i} className={`p-4 rounded-lg border-l-4 ${
+                  hw.status === 'Due Today' ? 'border-red-400 bg-red-50' :
+                  hw.status === 'Pending' ? 'border-orange-400 bg-orange-50' :
+                  'border-gray-300 bg-gray-50'
+                }`}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-semibold text-gray-800">{hw.subject}</span>
                       <span className={`px-2 py-0.5 rounded text-xs font-bold ${
