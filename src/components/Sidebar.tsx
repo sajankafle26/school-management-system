@@ -39,6 +39,18 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
     {
       section: 'ACADEMIC', items: [
         {
+          label: 'Classes', icon: 'building', children: [
+            { label: 'Class 8', path: '/dashboard/admin/class-sections', tab: '8' },
+            { label: 'Class 9', path: '/dashboard/admin/class-sections', tab: '9' },
+            { label: 'Class 10', path: '/dashboard/admin/class-sections', tab: '10' },
+          ]
+        },
+        { label: 'Subject', icon: 'book', path: '/dashboard/admin/subjects' },
+        { label: 'Section', icon: 'building', path: '/dashboard/admin/class-sections' },
+        { label: 'Routine', icon: 'table', path: '/dashboard/admin', tab: 'routines' },
+        { label: 'Academic Years', icon: 'calendar', path: '/dashboard/admin/academic-years' },
+        { label: 'Assignment', icon: 'pencil', path: '/dashboard/admin/homework' },
+        {
           label: 'Attendance', icon: 'calendar-check', children: [
             { label: 'Student Attendance', path: '/dashboard/admin/attendance', tab: 'student' },
             { label: 'Teacher Attendance', path: '/dashboard/admin/attendance', tab: 'teacher' },
@@ -53,18 +65,8 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
             { label: 'Grades', path: '/dashboard/admin/grades' },
           ]
         },
-        { label: 'Class Sections', icon: 'building', path: '/dashboard/admin/class-sections' },
-        { label: 'Academic Years', icon: 'calendar', path: '/dashboard/admin/academic-years' },
-        { label: 'Subjects', icon: 'book', path: '/dashboard/admin/subjects' },
-        {
-          label: 'Homework', icon: 'book', path: '/dashboard/admin/homework', children: [
-            { label: 'Homework List', path: '/dashboard/admin/homework' },
-            { label: 'Homework Calendar', path: '/dashboard/admin/homework', tab: 'calendar' },
-          ]
-        },
         { label: 'Question Bank', icon: 'pencil', path: '/dashboard/admin/question-bank' },
         { label: 'Syllabus', icon: 'book', path: '/dashboard/admin', tab: 'syllabus' },
-        { label: 'Routines', icon: 'table', path: '/dashboard/admin', tab: 'routines' },
       ]
     },
     {
