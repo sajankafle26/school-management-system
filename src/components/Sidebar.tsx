@@ -34,6 +34,13 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
         { label: 'Parents', icon: 'people', path: '/dashboard/admin/parents' },
         { label: 'Staff', icon: 'briefcase', path: '/dashboard/admin/staff' },
         { label: 'Drivers', icon: 'truck', path: '/dashboard/admin/drivers' },
+        {
+          label: 'Attendance', icon: 'calendar-check', children: [
+            { label: 'Student Attendance', path: '/dashboard/admin/attendance', tab: 'student' },
+            { label: 'Teacher Attendance', path: '/dashboard/admin/attendance', tab: 'teacher' },
+            { label: 'Staff Attendance', path: '/dashboard/admin/attendance', tab: 'staff' },
+          ]
+        },
       ]
     },
     {
@@ -50,13 +57,10 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
         { label: 'Routine', icon: 'table', path: '/dashboard/admin', tab: 'routines' },
         { label: 'Academic Years', icon: 'calendar', path: '/dashboard/admin/academic-years' },
         { label: 'Assignment', icon: 'pencil', path: '/dashboard/admin/homework' },
-        {
-          label: 'Attendance', icon: 'calendar-check', children: [
-            { label: 'Student Attendance', path: '/dashboard/admin/attendance', tab: 'student' },
-            { label: 'Teacher Attendance', path: '/dashboard/admin/attendance', tab: 'teacher' },
-            { label: 'Staff Attendance', path: '/dashboard/admin/attendance', tab: 'staff' },
-          ]
-        },
+      ]
+    },
+    {
+      section: 'ASSESSMENT', items: [
         { label: 'Results', icon: 'graph-up', path: '/dashboard/admin/results' },
         {
           label: 'Exams', icon: 'pencil', children: [
@@ -117,29 +121,33 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
       ]
     },
     {
-      section: 'ACADEMIC', items: [
+      section: 'MANAGEMENT', items: [
         {
           label: 'Attendance', icon: 'calendar-check', children: [
             { label: 'Mark Attendance', path: '/dashboard/teacher', tab: 'attendance' },
             { label: 'Attendance Report', path: '/dashboard/teacher', tab: 'attendance-report' },
           ]
         },
+      ]
+    },
+    {
+      section: 'ACADEMIC', items: [
+        { label: 'Subject', icon: 'book', path: '/dashboard/teacher', tab: 'subject' },
+        { label: 'Routine', icon: 'table', path: '/dashboard/teacher', tab: 'routines' },
+        { label: 'Assignment', icon: 'pencil', path: '/dashboard/teacher', tab: 'homework' },
+      ]
+    },
+    {
+      section: 'ASSESSMENT', items: [
         { label: 'Results', icon: 'graph-up', path: '/dashboard/teacher', tab: 'results' },
-        {
-          label: 'Homework', icon: 'pencil', children: [
-            { label: 'Create Homework', path: '/dashboard/teacher', tab: 'homework' },
-            { label: 'Homework List', path: '/dashboard/teacher', tab: 'homework-list' },
-          ]
-        },
-        { label: 'Routines', icon: 'table', path: '/dashboard/teacher', tab: 'routines' },
         { label: 'Syllabus', icon: 'book', path: '/dashboard/teacher', tab: 'syllabus' },
-        { label: 'Library', icon: 'book', path: '/dashboard/teacher', tab: 'library' },
       ]
     },
     {
       section: 'SERVICES', items: [
         { label: 'Notices', icon: 'megaphone', path: '/dashboard/teacher', tab: 'notices' },
         { label: 'Events', icon: 'calendar-event', path: '/dashboard/teacher', tab: 'events' },
+        { label: 'Library', icon: 'book', path: '/dashboard/teacher', tab: 'library' },
         { label: 'SMS Services', icon: 'chat', path: '/dashboard/teacher', tab: 'sms' },
       ]
     },
