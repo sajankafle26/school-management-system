@@ -114,7 +114,7 @@ export async function POST() {
       { name: 'Bikram Shah', nepaliName: 'बिक्रम शाह', jobTitle: 'Admin Officer', contact: '9841000333', email: 'bikram.s@school.edu.np', profilePic: 'https://picsum.photos/seed/staff3/100' },
     ]);
 
-    await Driver.insertMany([
+    const drivers = await Driver.insertMany([
       { name: 'Ram Bahadur', contact: '9841000112', licenseNumber: 'NP-A-12345', profilePic: 'https://picsum.photos/seed/driver1/100', busId: 1 },
       { name: 'Shyam Karki', contact: '9841000113', licenseNumber: 'NP-B-67890', profilePic: 'https://picsum.photos/seed/driver2/100', busId: 2 },
     ]);
@@ -198,44 +198,44 @@ export async function POST() {
     ]);
 
     await ExamSchedule.insertMany([
-      { examId: exams[0]._id, subject: 'Nepali', date: '2024-08-01', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
-      { examId: exams[0]._id, subject: 'English', date: '2024-08-02', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
-      { examId: exams[0]._id, subject: 'C. Maths', date: '2024-08-03', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
-      { examId: exams[0]._id, subject: 'Science', date: '2024-08-04', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
-      { examId: exams[0]._id, subject: 'Social Studies', date: '2024-08-05', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
-      { examId: exams[0]._id, subject: 'EPH', date: '2024-08-06', startTime: '07:00', endTime: '10:00', fullMarks: 50, passMarks: 16 },
+      { examId: exams[0]._id, subject: 'Nepali', date: '2024-08-01', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32, academicYear: currentYear },
+      { examId: exams[0]._id, subject: 'English', date: '2024-08-02', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32, academicYear: currentYear },
+      { examId: exams[0]._id, subject: 'C. Maths', date: '2024-08-03', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32, academicYear: currentYear },
+      { examId: exams[0]._id, subject: 'Science', date: '2024-08-04', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32, academicYear: currentYear },
+      { examId: exams[0]._id, subject: 'Social Studies', date: '2024-08-05', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32, academicYear: currentYear },
+      { examId: exams[0]._id, subject: 'EPH', date: '2024-08-06', startTime: '07:00', endTime: '10:00', fullMarks: 50, passMarks: 16, academicYear: currentYear },
     ]);
 
     const hostels = await Hostel.insertMany([
-      { name: 'Shree Hostel - Boys', type: 'Boys', address: 'Kathmandu, Nepal', wardenName: 'Ram Karki', wardenContact: '9841000444', rooms: 10, capacity: 40 },
-      { name: 'Shree Hostel - Girls', type: 'Girls', address: 'Patan, Nepal', wardenName: 'Sita Rai', wardenContact: '9841000555', rooms: 8, capacity: 32 },
+      { name: 'Shree Hostel - Boys', type: 'Boys', address: 'Kathmandu, Nepal', wardenName: 'Ram Karki', wardenContact: '9841000444', rooms: 10, capacity: 40, academicYear: currentYear },
+      { name: 'Shree Hostel - Girls', type: 'Girls', address: 'Patan, Nepal', wardenName: 'Sita Rai', wardenContact: '9841000555', rooms: 8, capacity: 32, academicYear: currentYear },
     ]);
 
     await HostelMember.insertMany([
-      { studentId: 1, hostelId: hostels[0]._id, roomNumber: '101', academicYear: currentYear },
-      { studentId: 4, hostelId: hostels[0]._id, roomNumber: '102', academicYear: currentYear },
-      { studentId: 6, hostelId: hostels[0]._id, roomNumber: '101', academicYear: currentYear },
-      { studentId: 2, hostelId: hostels[1]._id, roomNumber: '201', academicYear: currentYear },
-      { studentId: 5, hostelId: hostels[1]._id, roomNumber: '202', academicYear: currentYear },
+      { studentId: students[0]._id, hostelId: hostels[0]._id, roomNumber: '101', academicYear: currentYear },
+      { studentId: students[3]._id, hostelId: hostels[0]._id, roomNumber: '102', academicYear: currentYear },
+      { studentId: students[5]._id, hostelId: hostels[0]._id, roomNumber: '101', academicYear: currentYear },
+      { studentId: students[1]._id, hostelId: hostels[1]._id, roomNumber: '201', academicYear: currentYear },
+      { studentId: students[4]._id, hostelId: hostels[1]._id, roomNumber: '202', academicYear: currentYear },
     ]);
 
-    await TransportRoute.insertMany([
-      { name: 'Route 1 - Kathmandu North', route: 'Boudha → Chabahil → Gaushala → School', fare: 1500, vehicleNo: 'BA 1 KHA 1234', driverId: 1, academicYear: currentYear },
-      { name: 'Route 2 - Patan South', route: 'Patan Dhoka → Lagankhel → Jawalakhel → School', fare: 1200, vehicleNo: 'BA 1 KHA 5678', driverId: 2, academicYear: currentYear },
+    const transportRoutes = await TransportRoute.insertMany([
+      { name: 'Route 1 - Kathmandu North', route: 'Boudha → Chabahil → Gaushala → School', fare: 1500, vehicleNo: 'BA 1 KHA 1234', driverId: drivers[0]._id, academicYear: currentYear },
+      { name: 'Route 2 - Patan South', route: 'Patan Dhoka → Lagankhel → Jawalakhel → School', fare: 1200, vehicleNo: 'BA 1 KHA 5678', driverId: drivers[1]._id, academicYear: currentYear },
     ]);
 
     await TransportMember.insertMany([
-      { studentId: 1, routeId: 1, pickupPoint: 'Boudha', academicYear: currentYear },
-      { studentId: 3, routeId: 1, pickupPoint: 'Chabahil', academicYear: currentYear },
-      { studentId: 6, routeId: 1, pickupPoint: 'Gaushala', academicYear: currentYear },
-      { studentId: 2, routeId: 2, pickupPoint: 'Patan Dhoka', academicYear: currentYear },
-      { studentId: 5, routeId: 2, pickupPoint: 'Jawalakhel', academicYear: currentYear },
+      { studentId: students[0]._id, routeId: transportRoutes[0]._id, pickupPoint: 'Boudha', academicYear: currentYear },
+      { studentId: students[2]._id, routeId: transportRoutes[0]._id, pickupPoint: 'Chabahil', academicYear: currentYear },
+      { studentId: students[5]._id, routeId: transportRoutes[0]._id, pickupPoint: 'Gaushala', academicYear: currentYear },
+      { studentId: students[1]._id, routeId: transportRoutes[1]._id, pickupPoint: 'Patan Dhoka', academicYear: currentYear },
+      { studentId: students[4]._id, routeId: transportRoutes[1]._id, pickupPoint: 'Jawalakhel', academicYear: currentYear },
     ]);
 
     await OnlineAdmission.insertMany([
-      { applicantName: 'Rabin Shrestha', dateOfBirth: '2009-05-15', gender: 'Male', nationality: 'Nepali', className: '9', fatherName: 'Krishna Shrestha', motherName: 'Maya Shrestha', contact: '9841111111', email: 'rabin.shrestha@email.com', address: 'Kathmandu', previousSchool: 'Shree Bal Uddhar School', status: 'Pending', academicYear: currentYear },
-      { applicantName: 'Sneha Karki', dateOfBirth: '2010-08-20', gender: 'Female', nationality: 'Nepali', className: '8', fatherName: 'Raj Karki', motherName: 'Sita Karki', contact: '9841222222', email: 'sneha.karki@email.com', address: 'Patan', previousSchool: 'Patan Secondary School', status: 'Approved', academicYear: currentYear },
-      { applicantName: 'Anup Thapa', dateOfBirth: '2008-12-10', gender: 'Male', nationality: 'Nepali', className: '10', fatherName: 'Hari Thapa', motherName: 'Sunita Thapa', contact: '9841333333', email: 'anup.thapa@email.com', address: 'Bhaktapur', previousSchool: 'Bhaktapur English School', status: 'Pending', academicYear: currentYear },
+      { name: 'Rabin Shrestha', dateOfBirth: '2009-05-15', gender: 'Male', className: '9', fatherName: 'Krishna Shrestha', motherName: 'Maya Shrestha', contact: '9841111111', email: 'rabin.shrestha@email.com', address: 'Kathmandu', previousSchool: 'Shree Bal Uddhar School', status: 'Pending', academicYear: currentYear },
+      { name: 'Sneha Karki', dateOfBirth: '2010-08-20', gender: 'Female', className: '8', fatherName: 'Raj Karki', motherName: 'Sita Karki', contact: '9841222222', email: 'sneha.karki@email.com', address: 'Patan', previousSchool: 'Patan Secondary School', status: 'Approved', academicYear: currentYear },
+      { name: 'Anup Thapa', dateOfBirth: '2008-12-10', gender: 'Male', className: '10', fatherName: 'Hari Thapa', motherName: 'Sunita Thapa', contact: '9841333333', email: 'anup.thapa@email.com', address: 'Bhaktapur', previousSchool: 'Bhaktapur English School', status: 'Pending', academicYear: currentYear },
     ]);
 
     await FeeInvoice.insertMany([
@@ -256,26 +256,35 @@ export async function POST() {
       { date: '2024-07-05', category: 'Utilities', description: 'Electricity and Water Bill', amount: 35000 },
       { date: '2024-07-10', category: 'Supplies', description: 'Stationery and Office Supplies', amount: 25000 },
       { date: '2024-07-15', category: 'Maintenance', description: 'Building Maintenance and Repairs', amount: 45000 },
-      { date: '2024-07-20', category: 'Transport', description: 'Bus Fuel and Maintenance', amount: 30000 },
+      { date: '2024-07-20', category: 'Other', description: 'Transport - Bus Fuel and Maintenance', amount: 30000 },
     ]);
 
     await WebsiteContent.create({
       schoolName: 'Shree Adarsha Secondary School',
       logoUrl: 'https://emojicdn.elk.sh/🇳🇵',
       themeColor: '#4f46e5',
-      topBar: { showTopBar: true, phone: '+977-1-4412345', email: 'info@adarshaschool.edu.np', address: 'Kathmandu, Nepal' },
-      hero: { title: 'Quality Education for Tomorrow\'s Leaders', subtitle: 'Shree Adarsha Secondary School - Established 2050 BS', backgroundImage: 'https://picsum.photos/seed/school-hero/1920', ctaText: 'Admissions Open', ctaLink: '/contact' },
-      stats: { students: 500, teachers: 35, passRate: 98, years: 28 },
-      features: [
-        { title: 'Experienced Faculty', description: 'Highly qualified teachers dedicated to student success', icon: '👨‍🏫' },
-        { title: 'Modern Facilities', description: 'Well-equipped labs, library, and sports facilities', icon: '🏫' },
-        { title: 'Digital Learning', description: 'Smart classrooms with modern technology', icon: '💻' },
-        { title: 'Holistic Development', description: 'Sports, arts, and extracurricular activities', icon: '🎭' },
+      topBar: { showTopBar: true, phone: '+977-1-4412345', email: 'info@adarshaschool.edu.np' },
+      home: {
+        heroTitle: 'Quality Education for Tomorrow\'s Leaders',
+        heroSubtitle: 'Shree Adarsha Secondary School - Established 2050 BS',
+        heroImageUrl: 'https://picsum.photos/seed/school-hero/1920',
+        welcomeTitle: 'Welcome to Adarsha School',
+        welcomeMessage: 'Providing quality education for over 28 years.',
+      },
+      about: {
+        title: 'About Our School',
+        content: 'Established in 2050 BS, Shree Adarsha Secondary School has been serving the community for over 28 years with excellence in education. Our mission is to provide quality education that nurtures intellectual, physical, and moral development of students.',
+      },
+      contact: {
+        address: 'Kathmandu, Nepal',
+        phone: '+977-1-4412345',
+        email: 'info@adarshaschool.edu.np',
+        mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.1234!2d85.324!3d27.717!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDQzJzAxLjIiTiA4NcKwMTknMjYuNCJF!5e0!3m2!1sen!2snp!4v1234567890',
+      },
+      galleries: [
+        { id: 1, title: 'Sports Day 2024', images: [{ id: 1, url: 'https://picsum.photos/seed/sports1/400', caption: 'Students running' }, { id: 2, url: 'https://picsum.photos/seed/sports2/400', caption: 'Prize ceremony' }, { id: 3, url: 'https://picsum.photos/seed/sports3/400', caption: 'Sports event' }] },
+        { id: 2, title: 'Annual Function', images: [{ id: 1, url: 'https://picsum.photos/seed/function1/400', caption: 'Cultural program' }, { id: 2, url: 'https://picsum.photos/seed/function2/400', caption: 'Annual gathering' }] },
       ],
-      about: { mission: 'To provide quality education that nurtures intellectual, physical, and moral development of students.', vision: 'To be a leading educational institution producing responsible global citizens.', history: 'Established in 2050 BS, Shree Adarsha Secondary School has been serving the community for over 28 years with excellence in education.' },
-      contact: { phone: '+977-1-4412345', email: 'info@adarshaschool.edu.np', address: 'Kathmandu, Nepal', mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.1234!2d85.324!3d27.717!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDQzJzAxLjIiTiA4NcKwMTknMjYuNCJF!5e0!3m2!1sen!2snp!4v1234567890' },
-      notices: [],
-      galleries: [{ title: 'Sports Day 2024', images: ['https://picsum.photos/seed/sports1/400', 'https://picsum.photos/seed/sports2/400', 'https://picsum.photos/seed/sports3/400'] }, { title: 'Annual Function', images: ['https://picsum.photos/seed/function1/400', 'https://picsum.photos/seed/function2/400'] }],
     });
 
     return NextResponse.json({ 
