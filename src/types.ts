@@ -295,6 +295,263 @@ export interface Gallery {
   images: GalleryImage[];
 }
 
+// Exam Types
+export interface Grade {
+  _id?: string;
+  name: string;
+  gradePoint: number;
+  markFrom: number;
+  markTo: number;
+  academicYear: string;
+}
+
+export interface Exam {
+  _id?: string;
+  name: string;
+  type: 'First Terminal' | 'Mid Terminal' | 'Final Terminal' | 'Pre-Board';
+  startDate: string;
+  endDate: string;
+  className: string;
+  section: string;
+  academicYear: string;
+}
+
+export interface ExamSchedule {
+  _id?: string;
+  examId: string;
+  subject: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  fullMarks: number;
+  passMarks: number;
+  academicYear: string;
+}
+
+export interface QuestionGroup {
+  _id?: string;
+  name: string;
+  academicYear: string;
+}
+
+export interface QuestionLevel {
+  _id?: string;
+  name: string;
+  academicYear: string;
+}
+
+export interface QuestionBank {
+  _id?: string;
+  question: string;
+  type: 'Single Choice' | 'Multiple Choice' | 'True/False' | 'Descriptive';
+  options?: string[];
+  correctAnswer: string;
+  groupId: string;
+  levelId: string;
+  className: string;
+  subject: string;
+  mark: number;
+  academicYear: string;
+}
+
+export interface OnlineExam {
+  _id?: string;
+  name: string;
+  className: string;
+  section: string;
+  subject: string;
+  questions: string[];
+  duration: number;
+  startDate: string;
+  endDate: string;
+  attempt: number;
+  passingMarks: number;
+  academicYear: string;
+}
+
+export interface Hostel {
+  _id?: string;
+  name: string;
+  type: 'Boys' | 'Girls' | 'Combined';
+  address: string;
+  wardenName: string;
+  wardenContact: string;
+  rooms: number;
+  capacity: number;
+  academicYear: string;
+}
+
+export interface HostelMember {
+  _id?: string;
+  studentId: number;
+  hostelId: string;
+  roomNumber: string;
+  academicYear: string;
+}
+
+export interface TransportRoute {
+  _id?: string;
+  name: string;
+  route: string;
+  fare: number;
+  vehicleNo: string;
+  driverId: string;
+  academicYear: string;
+}
+
+export interface TransportMember {
+  _id?: string;
+  studentId: number;
+  routeId: string;
+  pickupPoint: string;
+  academicYear: string;
+}
+
+export interface ProductCategory {
+  _id?: string;
+  name: string;
+  description: string;
+}
+
+export interface Product {
+  _id?: string;
+  name: string;
+  categoryId: string;
+  unit: string;
+  price: number;
+  stock: number;
+  description: string;
+}
+
+export interface ProductPurchase {
+  _id?: string;
+  invoiceNo: string;
+  date: string;
+  supplierId: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  totalAmount: number;
+  academicYear: string;
+}
+
+export interface ProductSale {
+  _id?: string;
+  invoiceNo: string;
+  date: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  totalAmount: number;
+  academicYear: string;
+}
+
+export interface Supplier {
+  _id?: string;
+  name: string;
+  contact: string;
+  email: string;
+  address: string;
+}
+
+export interface AssetCategory {
+  _id?: string;
+  name: string;
+  description: string;
+}
+
+export interface Asset {
+  _id?: string;
+  name: string;
+  categoryId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  purchaseDate: string;
+  condition: 'New' | 'Good' | 'Fair' | 'Damaged';
+  description: string;
+  academicYear: string;
+}
+
+export interface SalaryTemplate {
+  _id?: string;
+  name: string;
+  basicSalary: number;
+  houseRent: number;
+  medicalAllowance: number;
+  transportAllowance: number;
+  otherAllowance: number;
+  total: number;
+  academicYear: string;
+}
+
+export interface Conversation {
+  _id?: string;
+  subject: string;
+  senderId: number;
+  receiverId: number;
+  message: string;
+  date: string;
+  isRead: boolean;
+  academicYear: string;
+}
+
+export interface Complaint {
+  _id?: string;
+  title: string;
+  description: string;
+  date: string;
+  complainantName: string;
+  contact: string;
+  status: 'Pending' | 'Resolved' | 'Rejected';
+  academicYear: string;
+}
+
+export interface VisitorInfo {
+  _id?: string;
+  name: string;
+  contact: string;
+  email: string;
+  purpose: string;
+  whomToMeet: string;
+  date: string;
+  inTime: string;
+  outTime: string;
+}
+
+export interface OnlineAdmission {
+  _id?: string;
+  name: string;
+  dateOfBirth: string;
+  className: string;
+  gender: string;
+  fatherName: string;
+  motherName: string;
+  contact: string;
+  email: string;
+  address: string;
+  previousSchool: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  academicYear: string;
+}
+
+export interface CertificateTemplate {
+  _id?: string;
+  name: string;
+  type: 'Transfer' | 'Character' | 'Bonafide' | 'Completion';
+  content: string;
+  academicYear: string;
+}
+
+export interface IdCard {
+  _id?: string;
+  title: string;
+  description: string;
+  layout: 'vertical' | 'horizontal';
+  fields: string[];
+  academicYear: string;
+}
+
 export interface WebsiteContent {
   schoolName: string;
   logoUrl: string;

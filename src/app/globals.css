@@ -2,22 +2,214 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #212529;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Poppins', sans-serif;
-  --font-mono: monospace;
+  --font-sans: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, monospace;
 }
 
 body {
-  background: var(--background);
+  background: #f4f6f9;
   color: var(--foreground);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.6;
 }
 
-.font-nepali {
-  font-family: 'Mukta', sans-serif;
+/* AdminLTE Card */
+.card {
+  background-color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  margin-bottom: 1rem;
+}
+
+.card-header {
+  padding: 0.75rem 1.25rem;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0,0,0,.125);
+  display: flex;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2d3d;
+  margin: 0;
+}
+
+.card-body {
+  padding: 1.25rem;
+  flex: 1 1 auto;
+}
+
+/* Small Box Widget */
+.small-box {
+  border-radius: 0.25rem;
+  position: relative;
+  display: block;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  overflow: hidden;
+  padding: 1.25rem;
+}
+
+.small-box .inner h3 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  padding: 0;
+}
+
+.small-box .inner p {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.85;
+}
+
+.small-box .small-box-icon {
+  position: absolute;
+  top: auto;
+  bottom: 5px;
+  right: 5px;
+  z-index: 0;
+  width: 70px;
+  height: 70px;
+  opacity: 0.3;
+}
+
+.small-box .small-box-footer {
+  display: block;
+  padding: 0.5rem 0;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "/";
+  padding: 0 0.5rem;
+  color: #6c757d;
+}
+
+.breadcrumb-item a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #6c757d;
+}
+
+/* Nav sidebar */
+.nav-sidebar .nav-header {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.35);
+  padding: 0.75rem 1rem 0.25rem;
+  font-weight: 700;
+}
+
+.nav-sidebar .nav-link {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-sidebar .nav-link .nav-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Sidebar treeview */
+.nav-treeview {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-treeview .nav-link {
+  padding-left: 2.5rem;
+  font-size: 0.875rem;
+}
+
+/* Text utilities */
+.fs-7 { font-size: 0.875rem; }
+.fw-medium { font-weight: 500; }
+.fw-semibold { font-weight: 600; }
+
+/* Overlay scrollbar for sidebar */
+.sidebar-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+/* Table styling */
+.table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* Badge styling to match AdminLTE */
+.navbar-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 5px;
+  font-size: 0.6rem;
+  transform: translate(25%, -25%);
+}
+
+/* User menu */
+.user-menu .user-image {
+  width: 33px;
+  height: 33px;
+}
+
+/* Loading spinner */
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border .75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to { transform: rotate(360deg); }
 }

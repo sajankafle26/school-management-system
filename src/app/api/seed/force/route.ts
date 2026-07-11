@@ -14,6 +14,16 @@ import FeeInvoice from '@/lib/models/FeeInvoice';
 import Expense from '@/lib/models/Expense';
 import WebsiteContent from '@/lib/models/WebsiteContent';
 import ClassSection from '@/lib/models/ClassSection';
+import Homework from '@/lib/models/Homework';
+import Book from '@/lib/models/Book';
+import Exam from '@/lib/models/Exam';
+import Grade from '@/lib/models/Grade';
+import ExamSchedule from '@/lib/models/ExamSchedule';
+import Hostel from '@/lib/models/Hostel';
+import HostelMember from '@/lib/models/HostelMember';
+import TransportRoute from '@/lib/models/TransportRoute';
+import TransportMember from '@/lib/models/TransportMember';
+import OnlineAdmission from '@/lib/models/OnlineAdmission';
 
 export async function POST() {
   try {
@@ -34,6 +44,16 @@ export async function POST() {
       Expense.deleteMany({}),
       WebsiteContent.deleteMany({}),
       ClassSection.deleteMany({}),
+      Homework.deleteMany({}),
+      Book.deleteMany({}),
+      Exam.deleteMany({}),
+      Grade.deleteMany({}),
+      ExamSchedule.deleteMany({}),
+      Hostel.deleteMany({}),
+      HostelMember.deleteMany({}),
+      TransportRoute.deleteMany({}),
+      TransportMember.deleteMany({}),
+      OnlineAdmission.deleteMany({}),
     ]);
 
     const academicYears = await AcademicYear.insertMany([
@@ -143,6 +163,81 @@ export async function POST() {
       { studentId: 5, examType: 'Mid Terminal', className: '10', section: 'A', marks: [{ subject: 'Nepali', marksObtained: 80, fullMarks: 100 }, { subject: 'English', marksObtained: 82, fullMarks: 100 }, { subject: 'C. Maths', marksObtained: 88, fullMarks: 100 }, { subject: 'Science', marksObtained: 79, fullMarks: 100 }, { subject: 'Social Studies', marksObtained: 81, fullMarks: 100 }, { subject: 'EPH', marksObtained: 78, fullMarks: 100 }], totalMarks: 488, percentage: 81.33, grade: 'A', remarks: 'Very Good', academicYear: currentYear },
     ]);
 
+    await Homework.insertMany([
+      { title: 'Algebra Practice', className: '10', section: 'A', subject: 'Mathematics', description: 'Solve problems 1-20 from Chapter 3', dueDate: '2024-07-20', status: 'Pending', priority: 'High', createdBy: 'Hari Prasad Adhikari', academicYear: currentYear },
+      { title: 'Essay on Democracy', className: '9', section: 'B', subject: 'Social Studies', description: 'Write a 500-word essay on democracy in Nepal', dueDate: '2024-07-22', status: 'Pending', priority: 'Medium', createdBy: 'Bimal Raj Sharma', academicYear: currentYear },
+      { title: 'Nepali Grammar', className: '8', section: 'A', subject: 'Nepali', description: 'Complete grammar exercises from Chapter 2', dueDate: '2024-07-18', status: 'Due Today', priority: 'High', createdBy: 'Srijana Maharjan', academicYear: currentYear },
+      { title: 'Science Lab Report', className: '10', section: 'B', subject: 'Science', description: 'Write lab report on photosynthesis experiment', dueDate: '2024-07-25', status: 'Pending', priority: 'Medium', createdBy: 'Shanti Devi Shrestha', academicYear: currentYear },
+      { title: 'English Reading', className: '9', section: 'A', subject: 'English', description: 'Read Chapter 5 and answer comprehension questions', dueDate: '2024-07-15', status: 'Completed', priority: 'Low', createdBy: 'Manoj Kumar Chaudhary', academicYear: currentYear },
+    ]);
+
+    await Book.insertMany([
+      { title: 'Science for Class 10', author: 'NCERT', isbn: '978-0-07-179989-5', publisher: 'NCERT Publications', totalCopies: 10, availableCopies: 8, shelfNo: 'A-101', description: 'Science textbook for grade 10' },
+      { title: 'Mathematics for Class 9', author: 'RD Sharma', isbn: '978-81-8468-100-1', publisher: 'Dhanpat Rai', totalCopies: 8, availableCopies: 6, shelfNo: 'A-102', description: 'Mathematics textbook for grade 9' },
+      { title: 'English Literature', author: 'Oxford', isbn: '978-0-19-450620-4', publisher: 'Oxford University Press', totalCopies: 12, availableCopies: 10, shelfNo: 'B-201', description: 'English literature anthology' },
+      { title: 'Nepali Sahitya', author: 'CDC Nepal', isbn: '978-9937-0-1122-0', publisher: 'CDC', totalCopies: 15, availableCopies: 13, shelfNo: 'B-202', description: 'Nepali language textbook' },
+      { title: 'Social Studies', author: 'CDC Nepal', isbn: '978-9937-0-1123-7', publisher: 'CDC', totalCopies: 10, availableCopies: 9, shelfNo: 'C-301', description: 'Social Studies textbook' },
+    ]);
+
+    await Grade.insertMany([
+      { name: 'A+', gradePoint: 4.0, markFrom: 90, markTo: 100, academicYear: currentYear },
+      { name: 'A', gradePoint: 3.6, markFrom: 80, markTo: 89, academicYear: currentYear },
+      { name: 'B+', gradePoint: 3.2, markFrom: 70, markTo: 79, academicYear: currentYear },
+      { name: 'B', gradePoint: 2.8, markFrom: 60, markTo: 69, academicYear: currentYear },
+      { name: 'C+', gradePoint: 2.4, markFrom: 50, markTo: 59, academicYear: currentYear },
+      { name: 'C', gradePoint: 2.0, markFrom: 40, markTo: 49, academicYear: currentYear },
+      { name: 'D+', gradePoint: 1.6, markFrom: 30, markTo: 39, academicYear: currentYear },
+      { name: 'D', gradePoint: 1.0, markFrom: 20, markTo: 29, academicYear: currentYear },
+      { name: 'E', gradePoint: 0.0, markFrom: 0, markTo: 19, academicYear: currentYear },
+    ]);
+
+    const exams = await Exam.insertMany([
+      { name: 'First Terminal Examination 2081', type: 'First Terminal', startDate: '2024-08-01', endDate: '2024-08-10', className: '10', section: 'A', academicYear: currentYear, status: 'Upcoming' },
+      { name: 'Mid Terminal Examination 2081', type: 'Mid Terminal', startDate: '2024-10-15', endDate: '2024-10-25', className: '10', section: 'A', academicYear: currentYear, status: 'Upcoming' },
+      { name: 'First Terminal Examination 2081', type: 'First Terminal', startDate: '2024-08-01', endDate: '2024-08-10', className: '9', section: 'B', academicYear: currentYear, status: 'Upcoming' },
+    ]);
+
+    await ExamSchedule.insertMany([
+      { examId: exams[0]._id, subject: 'Nepali', date: '2024-08-01', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
+      { examId: exams[0]._id, subject: 'English', date: '2024-08-02', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
+      { examId: exams[0]._id, subject: 'C. Maths', date: '2024-08-03', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
+      { examId: exams[0]._id, subject: 'Science', date: '2024-08-04', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
+      { examId: exams[0]._id, subject: 'Social Studies', date: '2024-08-05', startTime: '07:00', endTime: '10:00', fullMarks: 100, passMarks: 32 },
+      { examId: exams[0]._id, subject: 'EPH', date: '2024-08-06', startTime: '07:00', endTime: '10:00', fullMarks: 50, passMarks: 16 },
+    ]);
+
+    const hostels = await Hostel.insertMany([
+      { name: 'Shree Hostel - Boys', type: 'Boys', address: 'Kathmandu, Nepal', wardenName: 'Ram Karki', wardenContact: '9841000444', rooms: 10, capacity: 40 },
+      { name: 'Shree Hostel - Girls', type: 'Girls', address: 'Patan, Nepal', wardenName: 'Sita Rai', wardenContact: '9841000555', rooms: 8, capacity: 32 },
+    ]);
+
+    await HostelMember.insertMany([
+      { studentId: 1, hostelId: hostels[0]._id, roomNumber: '101', academicYear: currentYear },
+      { studentId: 4, hostelId: hostels[0]._id, roomNumber: '102', academicYear: currentYear },
+      { studentId: 6, hostelId: hostels[0]._id, roomNumber: '101', academicYear: currentYear },
+      { studentId: 2, hostelId: hostels[1]._id, roomNumber: '201', academicYear: currentYear },
+      { studentId: 5, hostelId: hostels[1]._id, roomNumber: '202', academicYear: currentYear },
+    ]);
+
+    await TransportRoute.insertMany([
+      { name: 'Route 1 - Kathmandu North', route: 'Boudha → Chabahil → Gaushala → School', fare: 1500, vehicleNo: 'BA 1 KHA 1234', driverId: 1, academicYear: currentYear },
+      { name: 'Route 2 - Patan South', route: 'Patan Dhoka → Lagankhel → Jawalakhel → School', fare: 1200, vehicleNo: 'BA 1 KHA 5678', driverId: 2, academicYear: currentYear },
+    ]);
+
+    await TransportMember.insertMany([
+      { studentId: 1, routeId: 1, pickupPoint: 'Boudha', academicYear: currentYear },
+      { studentId: 3, routeId: 1, pickupPoint: 'Chabahil', academicYear: currentYear },
+      { studentId: 6, routeId: 1, pickupPoint: 'Gaushala', academicYear: currentYear },
+      { studentId: 2, routeId: 2, pickupPoint: 'Patan Dhoka', academicYear: currentYear },
+      { studentId: 5, routeId: 2, pickupPoint: 'Jawalakhel', academicYear: currentYear },
+    ]);
+
+    await OnlineAdmission.insertMany([
+      { applicantName: 'Rabin Shrestha', dateOfBirth: '2009-05-15', gender: 'Male', nationality: 'Nepali', className: '9', fatherName: 'Krishna Shrestha', motherName: 'Maya Shrestha', contact: '9841111111', email: 'rabin.shrestha@email.com', address: 'Kathmandu', previousSchool: 'Shree Bal Uddhar School', status: 'Pending', academicYear: currentYear },
+      { applicantName: 'Sneha Karki', dateOfBirth: '2010-08-20', gender: 'Female', nationality: 'Nepali', className: '8', fatherName: 'Raj Karki', motherName: 'Sita Karki', contact: '9841222222', email: 'sneha.karki@email.com', address: 'Patan', previousSchool: 'Patan Secondary School', status: 'Approved', academicYear: currentYear },
+      { applicantName: 'Anup Thapa', dateOfBirth: '2008-12-10', gender: 'Male', nationality: 'Nepali', className: '10', fatherName: 'Hari Thapa', motherName: 'Sunita Thapa', contact: '9841333333', email: 'anup.thapa@email.com', address: 'Bhaktapur', previousSchool: 'Bhaktapur English School', status: 'Pending', academicYear: currentYear },
+    ]);
+
     await FeeInvoice.insertMany([
       { studentId: 1, amount: 16700, dueDate: '2024-07-15', status: 'Paid', academicYear: currentYear },
       { studentId: 2, amount: 16700, dueDate: '2024-07-15', status: 'Paid', academicYear: currentYear },
@@ -199,6 +294,16 @@ export async function POST() {
         results: 5,
         feeInvoices: 10,
         expenses: 5,
+        homework: 5,
+        books: 5,
+        grades: 9,
+        exams: 3,
+        examSchedules: 6,
+        hostels: 2,
+        hostelMembers: 5,
+        transportRoutes: 2,
+        transportMembers: 5,
+        onlineAdmissions: 3,
       }
     });
   } catch (error) {

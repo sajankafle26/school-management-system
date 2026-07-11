@@ -146,6 +146,7 @@ export default function DashboardPage() {
           isViewingWebsite={isViewingWebsite}
           setIsViewingWebsite={setIsViewingWebsite}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          currentPage="Dashboard"
         />
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f4f6f9] p-4">
           {renderPage()}
