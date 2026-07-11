@@ -243,7 +243,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, collapsed, onToggle }
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'overview';
 
-  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
+  const allSections = new Set<string>();
+  Object.values(navConfig).forEach(roleSections => roleSections.forEach(s => { if (s.section) allSections.add(`__section__${s.section}`); }));
+  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set(allSections));
 
   const navSections = navConfig[user.role] || [];
 
@@ -312,11 +314,29 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, collapsed, onToggle }
             {navSections.map((section, si) => (
               <li key={si} className="nav-item" style={{ marginBottom: '0.25rem' }}>
                 {!collapsed && section.section && (
-                  <div className="nav-header px-3 py-2 text-uppercase fw-bold" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.05em' }}>
-                    {section.section}
-                  </div>
+                  <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); toggleMenu(`__section__${section.section}`); }}
+                    className="nav-link d-flex align-items-center px-3 py-1"
+                    style={{
+                      color: 'rgba(255,255,255,0.5)',
+                      textDecoration: 'none',
+                      cursor: 'pointer',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    <span className="flex-fill">{section.section}</span>
+                    <span className="nav-arrow d-flex align-items-center" style={{ transition: 'transform 0.3s', transform: expandedMenus.has(`__section__${section.section}`) ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                      </svg>
+                    </span>
+                  </a>
                 )}
-                <ul className="nav nav-section flex-column" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <ul className="nav nav-section flex-column" style={{ listStyle: 'none', padding: 0, margin: 0, display: !collapsed && section.section && !expandedMenus.has(`__section__${section.section}`) ? 'none' : '' }}>
                   {section.items.map((item, ii) => {
                     const active = isActive(item.path, item.tab);
                     const hasChildren = item.children && item.children.length > 0;
