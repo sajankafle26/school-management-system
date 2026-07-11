@@ -89,6 +89,7 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
     '/dashboard/admin/results': 'Results',
     '/dashboard/admin/fee-invoices': 'Fee Invoices',
     '/dashboard/admin/expenses': 'Expenses',
+    '/dashboard/admin/subjects': 'Subjects',
   };
 
   const currentPage = breadcrumbMap[pathname] || 'Dashboard';

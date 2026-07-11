@@ -13,7 +13,7 @@ interface SidebarProps {
 
 interface NavItemConfig {
   label: string;
-  icon: string;
+  icon?: string;
   path?: string;
   tab?: string;
   badge?: { text: string; color: string };
@@ -38,13 +38,30 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
     },
     {
       section: 'ACADEMIC', items: [
-        { label: 'Attendance', icon: 'calendar-check', path: '/dashboard/admin/attendance' },
+        {
+          label: 'Attendance', icon: 'calendar-check', children: [
+            { label: 'Student Attendance', path: '/dashboard/admin/attendance', tab: 'student' },
+            { label: 'Teacher Attendance', path: '/dashboard/admin/attendance', tab: 'teacher' },
+            { label: 'Staff Attendance', path: '/dashboard/admin/attendance', tab: 'staff' },
+          ]
+        },
         { label: 'Results', icon: 'graph-up', path: '/dashboard/admin/results' },
-        { label: 'Exams', icon: 'pencil', path: '/dashboard/admin/exams' },
-        { label: 'Grades', icon: 'graph-up', path: '/dashboard/admin/grades' },
+        {
+          label: 'Exams', icon: 'pencil', children: [
+            { label: 'Exam List', path: '/dashboard/admin/exams' },
+            { label: 'Exam Schedule', path: '/dashboard/admin/exams', tab: 'schedule' },
+            { label: 'Grades', path: '/dashboard/admin/grades' },
+          ]
+        },
         { label: 'Class Sections', icon: 'building', path: '/dashboard/admin/class-sections' },
         { label: 'Academic Years', icon: 'calendar', path: '/dashboard/admin/academic-years' },
-        { label: 'Homework', icon: 'book', path: '/dashboard/admin/homework' },
+        { label: 'Subjects', icon: 'book', path: '/dashboard/admin/subjects' },
+        {
+          label: 'Homework', icon: 'book', path: '/dashboard/admin/homework', children: [
+            { label: 'Homework List', path: '/dashboard/admin/homework' },
+            { label: 'Homework Calendar', path: '/dashboard/admin/homework', tab: 'calendar' },
+          ]
+        },
         { label: 'Question Bank', icon: 'pencil', path: '/dashboard/admin/question-bank' },
         { label: 'Syllabus', icon: 'book', path: '/dashboard/admin', tab: 'syllabus' },
         { label: 'Routines', icon: 'table', path: '/dashboard/admin', tab: 'routines' },
@@ -52,7 +69,12 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
     },
     {
       section: 'LIBRARY', items: [
-        { label: 'Library', icon: 'book', path: '/dashboard/admin/library' },
+        {
+          label: 'Library', icon: 'book', children: [
+            { label: 'Books', path: '/dashboard/admin/library', tab: 'books' },
+            { label: 'Issue/Return', path: '/dashboard/admin/library', tab: 'issue' },
+          ]
+        },
       ]
     },
     {
@@ -94,9 +116,19 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
     },
     {
       section: 'ACADEMIC', items: [
-        { label: 'Attendance', icon: 'calendar-check', path: '/dashboard/teacher', tab: 'attendance' },
+        {
+          label: 'Attendance', icon: 'calendar-check', children: [
+            { label: 'Mark Attendance', path: '/dashboard/teacher', tab: 'attendance' },
+            { label: 'Attendance Report', path: '/dashboard/teacher', tab: 'attendance-report' },
+          ]
+        },
         { label: 'Results', icon: 'graph-up', path: '/dashboard/teacher', tab: 'results' },
-        { label: 'Homework', icon: 'pencil', path: '/dashboard/teacher', tab: 'homework' },
+        {
+          label: 'Homework', icon: 'pencil', children: [
+            { label: 'Create Homework', path: '/dashboard/teacher', tab: 'homework' },
+            { label: 'Homework List', path: '/dashboard/teacher', tab: 'homework-list' },
+          ]
+        },
         { label: 'Routines', icon: 'table', path: '/dashboard/teacher', tab: 'routines' },
         { label: 'Syllabus', icon: 'book', path: '/dashboard/teacher', tab: 'syllabus' },
         { label: 'Library', icon: 'book', path: '/dashboard/teacher', tab: 'library' },
@@ -120,7 +152,12 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
       section: 'ACADEMIC', items: [
         { label: 'Results', icon: 'graph-up', path: '/dashboard/student', tab: 'results' },
         { label: 'Homework', icon: 'pencil', path: '/dashboard/student', tab: 'homework' },
-        { label: 'Attendance', icon: 'calendar-check', path: '/dashboard/student', tab: 'attendance' },
+        {
+          label: 'Attendance', icon: 'calendar-check', children: [
+            { label: 'My Attendance', path: '/dashboard/student', tab: 'attendance' },
+            { label: 'Attendance Report', path: '/dashboard/student', tab: 'attendance-report' },
+          ]
+        },
         { label: 'Routines', icon: 'table', path: '/dashboard/student', tab: 'routines' },
         { label: 'Syllabus', icon: 'book', path: '/dashboard/student', tab: 'syllabus' },
         { label: 'Library', icon: 'book', path: '/dashboard/student', tab: 'library' },
@@ -143,7 +180,12 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
     {
       section: 'CHILDREN', items: [
         { label: 'Results', icon: 'graph-up', path: '/dashboard/parent', tab: 'results' },
-        { label: 'Attendance', icon: 'calendar-check', path: '/dashboard/parent', tab: 'attendance' },
+        {
+          label: 'Attendance', icon: 'calendar-check', children: [
+            { label: 'My Child\'s Attendance', path: '/dashboard/parent', tab: 'attendance' },
+            { label: 'Attendance Report', path: '/dashboard/parent', tab: 'attendance-report' },
+          ]
+        },
         { label: 'Homework', icon: 'pencil', path: '/dashboard/parent', tab: 'homework' },
       ]
     },
@@ -292,7 +334,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, collapsed, onToggle }
                               onMouseLeave={(e) => { if (!active && !childActive) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; } }}
                             >
                               <span className="nav-icon d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '24px', height: '24px', marginRight: collapsed ? 0 : '10px' }}>
-                                {icons[item.icon]}
+                                {item.icon ? icons[item.icon] : null}
                               </span>
                               {!collapsed && <span className="flex-fill text-truncate">{item.label}</span>}
                               {!collapsed && (
@@ -363,8 +405,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onLogout, collapsed, onToggle }
                             onMouseLeave={(e) => { if (!active) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; } }}
                           >
                             <span className="nav-icon d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '24px', height: '24px', marginRight: collapsed ? 0 : '10px' }}>
-                              {icons[item.icon]}
-                            </span>
+                                {item.icon ? icons[item.icon] : null}
+                              </span>
                             {!collapsed && <span className="flex-fill text-truncate">{item.label}</span>}
                             {item.badge && !collapsed && (
                               <span className="nav-badge badge ms-2" style={{ backgroundColor: item.badge.color, fontSize: '0.7rem' }}>{item.badge.text}</span>
