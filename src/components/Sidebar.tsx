@@ -121,33 +121,18 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
       ]
     },
     {
-      section: 'MANAGEMENT', items: [
-        {
-          label: 'Attendance', icon: 'calendar-check', children: [
-            { label: 'Mark Attendance', path: '/dashboard/teacher', tab: 'attendance' },
-            { label: 'Attendance Report', path: '/dashboard/teacher', tab: 'attendance-report' },
-          ]
-        },
-      ]
-    },
-    {
-      section: 'ACADEMIC', items: [
+      section: 'MY CLASS', items: [
+        { label: 'My Class', icon: 'building', path: '/dashboard/teacher', tab: 'my-class' },
         { label: 'Subject', icon: 'book', path: '/dashboard/teacher', tab: 'subject' },
-        { label: 'Routine', icon: 'table', path: '/dashboard/teacher', tab: 'routines' },
+        { label: 'Attendance', icon: 'calendar-check', path: '/dashboard/teacher', tab: 'attendance' },
+        { label: 'Mark', icon: 'graph-up', path: '/dashboard/teacher', tab: 'results' },
         { label: 'Assignment', icon: 'pencil', path: '/dashboard/teacher', tab: 'homework' },
-      ]
-    },
-    {
-      section: 'ASSESSMENT', items: [
-        { label: 'Results', icon: 'graph-up', path: '/dashboard/teacher', tab: 'results' },
-        { label: 'Syllabus', icon: 'book', path: '/dashboard/teacher', tab: 'syllabus' },
       ]
     },
     {
       section: 'SERVICES', items: [
         { label: 'Notices', icon: 'megaphone', path: '/dashboard/teacher', tab: 'notices' },
         { label: 'Events', icon: 'calendar-event', path: '/dashboard/teacher', tab: 'events' },
-        { label: 'Library', icon: 'book', path: '/dashboard/teacher', tab: 'library' },
         { label: 'SMS Services', icon: 'chat', path: '/dashboard/teacher', tab: 'sms' },
       ]
     },
