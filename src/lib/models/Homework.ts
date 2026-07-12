@@ -1,5 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export interface IAttachment {
+  name: string;
+  url: string;
+  type: string;
+  size: number;
+}
+
 export interface IHomework extends Document {
   className: string;
   section: string;
@@ -8,11 +15,18 @@ export interface IHomework extends Document {
   description: string;
   assignedByTeacherId: number;
   dueDate: string;
-  imageUrl: string;
+  attachments: IAttachment[];
   academicYear: string;
   status: string;
   priority: string;
 }
+
+const AttachmentSchema = new Schema<IAttachment>({
+  name: { type: String, required: true },
+  url: { type: String, required: true },
+  type: { type: String, default: '' },
+  size: { type: Number, default: 0 },
+}, { _id: false });
 
 const HomeworkSchema = new Schema<IHomework>({
   className: { type: String, required: true },
@@ -22,7 +36,7 @@ const HomeworkSchema = new Schema<IHomework>({
   description: { type: String, default: '' },
   assignedByTeacherId: { type: Number, default: 0 },
   dueDate: { type: String, default: '' },
-  imageUrl: { type: String, default: '' },
+  attachments: { type: [AttachmentSchema], default: [] },
   academicYear: { type: String, required: true },
   status: { type: String, default: 'Pending' },
   priority: { type: String, default: 'Medium' },

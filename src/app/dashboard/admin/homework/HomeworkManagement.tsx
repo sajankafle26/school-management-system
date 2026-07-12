@@ -1,8 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import type { User, AcademicYear, ClassSection } from '@/types';
+
+interface Attachment {
+  name: string;
+  url: string;
+  type: string;
+  size: number;
+}
 
 export default function HomeworkManagement() {
   const [user, setUser] = useState<User | null>(null);
@@ -14,6 +21,8 @@ export default function HomeworkManagement() {
   const [filterClass, setFilterClass] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     title: '', className: '', section: '', subject: '', description: '', dueDate: '', status: 'Pending' as string, priority: 'Medium' as string, academicYear: ''
   });
@@ -43,8 +52,8 @@ export default function HomeworkManagement() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-[500px]">Loading...</div>;
-  if (!user || user.role !== 'admin') return <div className="flex items-center justify-center h-[500px]">Access denied</div>;
+  if (loading) return <div className="d-flex align-items-center justify-content-center p-5" style={{minHeight:'300px'}}>Loading...</div>;
+  if (!user || user.role !== 'admin') return <div className="d-flex align-items-center justify-content-center p-5" style={{minHeight:'300px'}}>Access denied</div>;
 
   const currentYear = academicYears.find(y => y.isCurrent)?.year || academicYears[0]?.year || '';
   const classes = [...new Set(classSections.map(c => c.className))].sort();
@@ -65,11 +74,49 @@ export default function HomeworkManagement() {
         description: item.description, dueDate: item.dueDate, status: item.status || 'Pending',
         priority: item.priority || 'Medium', academicYear: item.academicYear || currentYear
       });
+      setAttachments(item.attachments || []);
     } else {
       setEditingItem(null);
       setFormData({ title: '', className: '', section: '', subject: '', description: '', dueDate: '', status: 'Pending', priority: 'Medium', academicYear: currentYear });
+      setAttachments([]);
     }
     setShowModal(true);
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const newAttachments: Attachment[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const dataUrl = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => resolve(ev.target?.result as string);
+        reader.readAsDataURL(file);
+      });
+      newAttachments.push({ name: file.name, url: dataUrl, type: file.type, size: file.size });
+    }
+    setAttachments(prev => [...prev, ...newAttachments]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleRemoveAttachment = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  };
+
+  const getFileIcon = (type: string) => {
+    if (type.includes('pdf')) return '📄';
+    if (type.includes('image')) return '🖼️';
+    if (type.includes('word') || type.includes('document')) return '📝';
+    if (type.includes('sheet') || type.includes('excel')) return '📊';
+    if (type.includes('zip') || type.includes('rar')) return '📦';
+    return '📎';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,7 +127,7 @@ export default function HomeworkManagement() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, attachments })
       });
       if (!res.ok) throw new Error('Failed to save');
       setShowModal(false);
@@ -89,6 +136,15 @@ export default function HomeworkManagement() {
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to save homework');
+    }
+  };
+
+  const downloadAttachment = (att: Attachment) => {
+    if (att.url && att.url !== '#') {
+      const a = document.createElement('a');
+      a.href = att.url;
+      a.download = att.name;
+      a.click();
     }
   };
 
@@ -129,7 +185,8 @@ export default function HomeworkManagement() {
           const v = line.split(',').map(x => x.replace(/^"|"$/g, '').trim());
           return {
             title: v[0], className: v[1], section: v[2], subject: v[3], description: v[4],
-            dueDate: v[5], status: v[6] || 'Pending', priority: v[7] || 'Medium', academicYear: v[8] || currentYear
+            dueDate: v[5], status: v[6] || 'Pending', priority: v[7] || 'Medium', academicYear: v[8] || currentYear,
+            attachments: []
           };
         });
         for (const item of data) {
@@ -148,65 +205,91 @@ export default function HomeworkManagement() {
 
   return (
     <DashboardLayout allowedRoles={['admin']}>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Homework</h1>
-            <p className="text-sm text-gray-500">Manage homework assignments</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button onClick={handleExport} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">Export CSV</button>
-            <label className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 cursor-pointer">
+      <div className="card">
+        <div className="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <h3 className="card-title mb-0">Homework</h3>
+          <div className="d-flex align-items-center gap-2">
+            <button onClick={handleExport} className="btn btn-sm" style={{ backgroundColor: '#28a745', color: '#fff', border: 'none' }}>Export CSV</button>
+            <label className="btn btn-sm" style={{ backgroundColor: '#007bff', color: '#fff', border: 'none', cursor: 'pointer' }}>
               Import CSV
-              <input type="file" accept=".csv" onChange={handleImport} className="hidden" />
+              <input type="file" accept=".csv" onChange={handleImport} className="d-none" />
             </label>
-            <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">+ Add Homework</button>
+            <button onClick={() => handleOpenModal()} className="btn btn-sm" style={{ backgroundColor: '#6610f2', color: '#fff', border: 'none' }}>+ Add Homework</button>
           </div>
         </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-          <div className="p-4 border-b border-gray-100 flex flex-wrap items-center gap-4">
+        <div className="card-body">
+          <div className="d-flex align-items-center gap-3 mb-3 flex-wrap">
             <input type="text" placeholder="Search homework..." value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64" />
+              className="form-control form-control-sm" style={{ width: '250px' }} />
             <select value={filterClass} onChange={e => setFilterClass(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="form-select form-select-sm" style={{ width: '150px' }}>
               <option value="all">All Classes</option>
               {classes.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            <span className="text-sm text-gray-500 ml-auto">{filtered.length} homework</span>
+            <span className="text-muted small ms-auto">{filtered.length} homework</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="table-responsive">
+            <table className="table table-hover mb-0">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Title</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Class</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Subject</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Due Date</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                <tr>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Title</th>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Class</th>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Subject</th>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Attachments</th>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Due Date</th>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Status</th>
+                  <th className="px-3 py-3" style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', color: '#6c757d' }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
+                {filtered.length === 0 && (
+                  <tr><td colSpan={7} className="text-center py-4 text-muted">No homework found</td></tr>
+                )}
                 {filtered.map(h => (
-                  <tr key={h._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-800">{h.title}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{h.className} {h.section}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{h.subject}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{h.dueDate}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        h.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                        h.status === 'Due Today' ? 'bg-orange-100 text-orange-700' :
-                        h.status === 'Draft' ? 'bg-gray-100 text-gray-700' :
-                        'bg-blue-100 text-blue-700'
+                  <tr key={h._id}>
+                    <td className="px-3 py-2">
+                      <div className="fw-semibold">{h.title}</div>
+                      {h.description && <div className="text-muted small" style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.description}</div>}
+                    </td>
+                    <td className="px-3 py-2">{h.className} {h.section}</td>
+                    <td className="px-3 py-2">{h.subject}</td>
+                    <td className="px-3 py-2">
+                      {h.attachments && h.attachments.length > 0 ? (
+                        <div className="d-flex flex-column gap-1">
+                          {h.attachments.map((att: Attachment, i: number) => (
+                            <div key={i} className="d-flex align-items-center gap-1">
+                              <span>{getFileIcon(att.type)}</span>
+                              <a href={att.url !== '#' ? att.url : undefined}
+                                onClick={e => { if (att.url === '#') e.preventDefault(); else downloadAttachment(att); }}
+                                className="text-decoration-none small" style={{ color: '#007bff', cursor: att.url !== '#' ? 'pointer' : 'default' }}>
+                                {att.name}
+                              </a>
+                              <small className="text-muted">({formatFileSize(att.size)})</small>
+                            </div>
+                          ))}
+                        </div>
+                      ) : <span className="text-muted small">No files</span>}
+                    </td>
+                    <td className="px-3 py-2">{h.dueDate}</td>
+                    <td className="px-3 py-2">
+                      <span className={`badge ${
+                        h.status === 'Completed' ? 'bg-success' :
+                        h.status === 'Due Today' ? 'bg-warning text-dark' :
+                        h.status === 'Draft' ? 'bg-secondary' :
+                        'bg-info'
                       }`}>{h.status || 'Pending'}</span>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => handleOpenModal(h)} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium hover:bg-blue-200">Edit</button>
-                        <button onClick={() => handleDelete(h._id!)} className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium hover:bg-red-200">Delete</button>
+                    <td className="px-3 py-2">
+                      <div className="d-flex gap-1">
+                        <button onClick={() => handleOpenModal(h)}
+                          className="btn btn-sm" style={{ color: '#007bff', border: '1px solid #007bff', background: 'transparent' }}>
+                          Edit
+                        </button>
+                        <button onClick={() => handleDelete(h._id)}
+                          className="btn btn-sm" style={{ color: '#dc3545', border: '1px solid #dc3545', background: 'transparent' }}>
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -215,80 +298,103 @@ export default function HomeworkManagement() {
             </table>
           </div>
         </div>
+      </div>
 
-        {showModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">{editingItem ? 'Edit Homework' : 'Add Homework'}</h2>
-                <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      {showModal && (
+        <div className="modal d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title fw-bold">{editingItem ? 'Edit Homework' : 'Add Homework'}</h5>
+                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
               </div>
-              <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-                    <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Class *</label>
-                    <select value={formData.className} onChange={e => setFormData({...formData, className: e.target.value})} required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="">Select Class</option>
-                      {classes.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
-                    <select value={formData.section} onChange={e => setFormData({...formData, section: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="">All Sections</option>
-                      {sections.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Subject *</label>
-                    <input type="text" value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
-                    <input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="Pending">Pending</option>
-                      <option value="Due Today">Due Today</option>
-                      <option value="Upcoming">Upcoming</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Draft">Draft</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                    <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="Low">Low</option>
-                      <option value="Medium">Medium</option>
-                      <option value="High">High</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
-                    <select value={formData.academicYear} onChange={e => setFormData({...formData, academicYear: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      {academicYears.map(y => <option key={y.year} value={y.year}>{y.year} {y.isCurrent && '(Current)'}</option>)}
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <form onSubmit={handleSubmit}>
+                <div className="modal-body">
+                  <div className="row g-3">
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Title *</label>
+                      <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required className="form-control" />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label fw-medium">Class *</label>
+                      <select value={formData.className} onChange={e => setFormData({...formData, className: e.target.value})} required className="form-select">
+                        <option value="">Select Class</option>
+                        {classes.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label fw-medium">Section</label>
+                      <select value={formData.section} onChange={e => setFormData({...formData, section: e.target.value})} className="form-select">
+                        <option value="">All Sections</option>
+                        {sections.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label fw-medium">Subject *</label>
+                      <input type="text" value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} required className="form-control" />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label fw-medium">Due Date *</label>
+                      <input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} required className="form-control" />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label fw-medium">Status</label>
+                      <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="form-select">
+                        <option value="Pending">Pending</option>
+                        <option value="Due Today">Due Today</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Draft">Draft</option>
+                      </select>
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label fw-medium">Priority</label>
+                      <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className="form-select">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                      </select>
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label fw-medium">Academic Year</label>
+                      <select value={formData.academicYear} onChange={e => setFormData({...formData, academicYear: e.target.value})} className="form-select">
+                        {academicYears.map(y => <option key={y.year} value={y.year}>{y.year} {y.isCurrent ? '(Current)' : ''}</option>)}
+                      </select>
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Description</label>
+                      <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} rows={3} className="form-control" />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Attachments</label>
+                      <input ref={fileInputRef} type="file" multiple onChange={handleFileSelect} className="form-control" />
+                      {attachments.length > 0 && (
+                        <div className="mt-2 d-flex flex-column gap-1">
+                          {attachments.map((att, i) => (
+                            <div key={i} className="d-flex align-items-center justify-content-between p-2 rounded" style={{ backgroundColor: '#f8f9fa' }}>
+                              <div className="d-flex align-items-center gap-2">
+                                <span>{getFileIcon(att.type)}</span>
+                                <span className="small fw-medium">{att.name}</span>
+                                <small className="text-muted">({formatFileSize(att.size)})</small>
+                              </div>
+                              <button type="button" onClick={() => handleRemoveAttachment(i)}
+                                className="btn btn-sm btn-outline-danger px-2 py-0">Remove</button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                  <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200">Cancel</button>
-                  <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700">{editingItem ? 'Update' : 'Create'}</button>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary">{editingItem ? 'Update' : 'Create'}</button>
                 </div>
               </form>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

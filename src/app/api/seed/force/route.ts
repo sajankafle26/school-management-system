@@ -25,6 +25,7 @@ import TransportRoute from '@/lib/models/TransportRoute';
 import TransportMember from '@/lib/models/TransportMember';
 import OnlineAdmission from '@/lib/models/OnlineAdmission';
 import Routine from '@/lib/models/Routine';
+import Attendance from '@/lib/models/Attendance';
 
 export async function POST() {
   try {
@@ -55,6 +56,8 @@ export async function POST() {
       TransportRoute.deleteMany({}),
       TransportMember.deleteMany({}),
       OnlineAdmission.deleteMany({}),
+      Routine.deleteMany({}),
+      Attendance.deleteMany({}),
     ]);
 
     const academicYears = await AcademicYear.insertMany([
@@ -165,11 +168,11 @@ export async function POST() {
     ]);
 
     await Homework.insertMany([
-      { title: 'Algebra Practice', className: '10', section: 'A', subject: 'Mathematics', description: 'Solve problems 1-20 from Chapter 3', dueDate: '2024-07-20', status: 'Pending', priority: 'High', createdBy: 'Hari Prasad Adhikari', academicYear: currentYear },
-      { title: 'Essay on Democracy', className: '9', section: 'B', subject: 'Social Studies', description: 'Write a 500-word essay on democracy in Nepal', dueDate: '2024-07-22', status: 'Pending', priority: 'Medium', createdBy: 'Bimal Raj Sharma', academicYear: currentYear },
-      { title: 'Nepali Grammar', className: '8', section: 'A', subject: 'Nepali', description: 'Complete grammar exercises from Chapter 2', dueDate: '2024-07-18', status: 'Due Today', priority: 'High', createdBy: 'Srijana Maharjan', academicYear: currentYear },
-      { title: 'Science Lab Report', className: '10', section: 'B', subject: 'Science', description: 'Write lab report on photosynthesis experiment', dueDate: '2024-07-25', status: 'Pending', priority: 'Medium', createdBy: 'Shanti Devi Shrestha', academicYear: currentYear },
-      { title: 'English Reading', className: '9', section: 'A', subject: 'English', description: 'Read Chapter 5 and answer comprehension questions', dueDate: '2024-07-15', status: 'Completed', priority: 'Low', createdBy: 'Manoj Kumar Chaudhary', academicYear: currentYear },
+      { title: 'Algebra Practice', className: '10', section: 'A', subject: 'Mathematics', description: 'Solve problems 1-20 from Chapter 3', dueDate: '2024-07-20', status: 'Pending', priority: 'High', academicYear: currentYear, attachments: [{ name: 'algebra_ch3.pdf', url: '#', type: 'application/pdf', size: 245000 }] },
+      { title: 'Essay on Democracy', className: '9', section: 'B', subject: 'Social Studies', description: 'Write a 500-word essay on democracy in Nepal', dueDate: '2024-07-22', status: 'Pending', priority: 'Medium', academicYear: currentYear, attachments: [{ name: 'essay_guidelines.docx', url: '#', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', size: 18000 }] },
+      { title: 'Nepali Grammar', className: '8', section: 'A', subject: 'Nepali', description: 'Complete grammar exercises from Chapter 2', dueDate: '2024-07-18', status: 'Due Today', priority: 'High', academicYear: currentYear, attachments: [] },
+      { title: 'Science Lab Report', className: '10', section: 'B', subject: 'Science', description: 'Write lab report on photosynthesis experiment', dueDate: '2024-07-25', status: 'Pending', priority: 'Medium', academicYear: currentYear, attachments: [{ name: 'lab_template.pdf', url: '#', type: 'application/pdf', size: 320000 }] },
+      { title: 'English Reading', className: '9', section: 'A', subject: 'English', description: 'Read Chapter 5 and answer comprehension questions', dueDate: '2024-07-15', status: 'Completed', priority: 'Low', academicYear: currentYear, attachments: [] },
     ]);
 
     await Book.insertMany([
@@ -252,6 +255,23 @@ export async function POST() {
       { className: '8', section: 'A', day: 'Monday', periods: [{ period: 1, subject: 'English', teacherId: 3 }, { period: 2, subject: 'Nepali', teacherId: 4 }, { period: 3, subject: 'C. Maths', teacherId: 1 }, { period: 4, subject: 'Science', teacherId: 2 }], academicYear: currentYear },
     ]);
 
+    const today = new Date().toISOString().slice(0, 10);
+    await Attendance.insertMany([
+      { studentId: students[0]._id, date: '2024-07-14', status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[1]._id, date: '2024-07-14', status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[4]._id, date: '2024-07-14', status: 'late', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[0]._id, date: '2024-07-15', status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[1]._id, date: '2024-07-15', status: 'absent', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[4]._id, date: '2024-07-15', status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[0]._id, date: today, status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[1]._id, date: today, status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[4]._id, date: today, status: 'present', className: '10', section: 'A', academicYear: currentYear },
+      { studentId: students[2]._id, date: today, status: 'absent', className: '9', section: 'B', academicYear: currentYear },
+      { studentId: students[8]._id, date: today, status: 'late', className: '9', section: 'B', academicYear: currentYear },
+      { studentId: students[3]._id, date: today, status: 'present', className: '8', section: 'A', academicYear: currentYear },
+      { studentId: students[9]._id, date: today, status: 'absent', className: '8', section: 'A', academicYear: currentYear },
+    ]);
+
     await FeeInvoice.insertMany([
       { studentId: 1, amount: 16700, dueDate: '2024-07-15', status: 'Paid', academicYear: currentYear },
       { studentId: 2, amount: 16700, dueDate: '2024-07-15', status: 'Paid', academicYear: currentYear },
@@ -328,6 +348,7 @@ export async function POST() {
         transportMembers: 5,
         onlineAdmissions: 3,
         routines: 10,
+        attendance: 13,
       }
     });
   } catch (error) {
