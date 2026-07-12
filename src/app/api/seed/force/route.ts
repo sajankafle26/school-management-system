@@ -24,6 +24,7 @@ import HostelMember from '@/lib/models/HostelMember';
 import TransportRoute from '@/lib/models/TransportRoute';
 import TransportMember from '@/lib/models/TransportMember';
 import OnlineAdmission from '@/lib/models/OnlineAdmission';
+import Routine from '@/lib/models/Routine';
 
 export async function POST() {
   try {
@@ -238,6 +239,19 @@ export async function POST() {
       { name: 'Anup Thapa', dateOfBirth: '2008-12-10', gender: 'Male', className: '10', fatherName: 'Hari Thapa', motherName: 'Sunita Thapa', contact: '9841333333', email: 'anup.thapa@email.com', address: 'Bhaktapur', previousSchool: 'Bhaktapur English School', status: 'Pending', academicYear: currentYear },
     ]);
 
+    await Routine.insertMany([
+      { className: '10', section: 'A', day: 'Sunday', periods: [{ period: 1, subject: 'C. Maths', teacherId: 1 }, { period: 2, subject: 'Science', teacherId: 2 }, { period: 3, subject: 'English', teacherId: 3 }, { period: 4, subject: 'Nepali', teacherId: 4 }], academicYear: currentYear },
+      { className: '10', section: 'A', day: 'Monday', periods: [{ period: 1, subject: 'English', teacherId: 3 }, { period: 2, subject: 'Nepali', teacherId: 4 }, { period: 3, subject: 'C. Maths', teacherId: 1 }, { period: 4, subject: 'Science', teacherId: 2 }], academicYear: currentYear },
+      { className: '10', section: 'A', day: 'Tuesday', periods: [{ period: 1, subject: 'Science', teacherId: 2 }, { period: 2, subject: 'Social Studies', teacherId: 3 }, { period: 3, subject: 'English', teacherId: 3 }, { period: 4, subject: 'EPH', teacherId: 1 }], academicYear: currentYear },
+      { className: '10', section: 'A', day: 'Wednesday', periods: [{ period: 1, subject: 'C. Maths', teacherId: 1 }, { period: 2, subject: 'Science', teacherId: 2 }, { period: 3, subject: 'Nepali', teacherId: 4 }, { period: 4, subject: 'Social Studies', teacherId: 3 }], academicYear: currentYear },
+      { className: '10', section: 'A', day: 'Thursday', periods: [{ period: 1, subject: 'EPH', teacherId: 1 }, { period: 2, subject: 'English', teacherId: 3 }, { period: 3, subject: 'C. Maths', teacherId: 1 }, { period: 4, subject: 'Science', teacherId: 2 }], academicYear: currentYear },
+      { className: '10', section: 'A', day: 'Friday', periods: [{ period: 1, subject: 'Nepali', teacherId: 4 }, { period: 2, subject: 'Social Studies', teacherId: 3 }, { period: 3, subject: 'EPH', teacherId: 1 }, { period: 4, subject: 'Extra Curricular', teacherId: null }], academicYear: currentYear },
+      { className: '9', section: 'B', day: 'Sunday', periods: [{ period: 1, subject: 'Science', teacherId: 2 }, { period: 2, subject: 'C. Maths', teacherId: 1 }, { period: 3, subject: 'Nepali', teacherId: 4 }, { period: 4, subject: 'English', teacherId: 3 }], academicYear: currentYear },
+      { className: '9', section: 'B', day: 'Monday', periods: [{ period: 1, subject: 'Accountancy', teacherId: 1 }, { period: 2, subject: 'English', teacherId: 3 }, { period: 3, subject: 'Science', teacherId: 2 }, { period: 4, subject: 'C. Maths', teacherId: 1 }], academicYear: currentYear },
+      { className: '8', section: 'A', day: 'Sunday', periods: [{ period: 1, subject: 'C. Maths', teacherId: 1 }, { period: 2, subject: 'Science', teacherId: 2 }, { period: 3, subject: 'English', teacherId: 3 }, { period: 4, subject: 'Nepali', teacherId: 4 }], academicYear: currentYear },
+      { className: '8', section: 'A', day: 'Monday', periods: [{ period: 1, subject: 'English', teacherId: 3 }, { period: 2, subject: 'Nepali', teacherId: 4 }, { period: 3, subject: 'C. Maths', teacherId: 1 }, { period: 4, subject: 'Science', teacherId: 2 }], academicYear: currentYear },
+    ]);
+
     await FeeInvoice.insertMany([
       { studentId: 1, amount: 16700, dueDate: '2024-07-15', status: 'Paid', academicYear: currentYear },
       { studentId: 2, amount: 16700, dueDate: '2024-07-15', status: 'Paid', academicYear: currentYear },
@@ -313,6 +327,7 @@ export async function POST() {
         transportRoutes: 2,
         transportMembers: 5,
         onlineAdmissions: 3,
+        routines: 10,
       }
     });
   } catch (error) {
