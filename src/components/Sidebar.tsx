@@ -54,7 +54,7 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
         },
         { label: 'Subject', icon: 'book', path: '/dashboard/admin/subjects' },
         { label: 'Section', icon: 'building', path: '/dashboard/admin/class-sections' },
-        { label: 'Routine', icon: 'table', path: '/dashboard/admin', tab: 'routines' },
+        { label: 'Routine', icon: 'table', path: '/dashboard/admin/routines' },
         { label: 'Academic Years', icon: 'calendar', path: '/dashboard/admin/academic-years' },
         { label: 'Assignment', icon: 'pencil', path: '/dashboard/admin/homework' },
       ]
