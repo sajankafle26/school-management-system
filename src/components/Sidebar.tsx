@@ -46,7 +46,7 @@ const navConfig: Record<string, { section: string; items: NavItemConfig[] }[]> =
     {
       section: 'ACADEMIC', items: [
         {
-          label: 'Classes', icon: 'building', children: [
+          label: 'Classes', icon: 'building', path: '/dashboard/admin/classes', children: [
             { label: 'Class 8', path: '/dashboard/admin/class-sections', tab: '8' },
             { label: 'Class 9', path: '/dashboard/admin/class-sections', tab: '9' },
             { label: 'Class 10', path: '/dashboard/admin/class-sections', tab: '10' },
